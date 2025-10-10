@@ -1,0 +1,75 @@
+*{
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.Button-container{
+    display: flex;
+    gap:10%;
+    margin:3% auto;
+    width: fit-content;
+}
+.admin-login-button{
+    background-color: rgb(252, 127, 152);
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    padding: 1.2rem 1.5rem;
+    font-size:1rem;
+    border-radius: 2rem;
+    width: 10rem;
+}
+.doctor-login-button{
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    text-align: center;
+    padding: 1.2rem 1.5rem;
+    font-size:1rem;
+    border-radius: 2rem;
+    width: 10rem;
+}
+.rec-login-button{
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    text-align: center;
+    padding: 1.2rem 1.5rem;
+    font-size:1rem;
+    border-radius: 2rem;
+    width: 10rem;
+}
+.login-container{
+    display: flex;
+    flex-direction: column;
+    border:1px solid black;
+    border-radius:2rem;
+    width:30%;
+    margin: 0% auto;
+    padding: 3rem;
+    font-size:1rem;
+}
+.login-container>input{
+    font-size:1rem;
+    margin-top: 15%;
+    border-top: 0;
+    border-right: 0;
+    border-left: 0;
+    border-bottom:1px solid black;
+    outline: none;
+    background-color: transparent;
+}
+label{
+    margin-top: 5%;
+}
+h1{
+    text-align: center;
+    margin: 2%;
+}
+button{
+    /* background-color: rgb(255, 177, 121); */
+    width: fit-content;
+    text-align: center;
+    margin: 10% auto;
+    font-size: 1rem;
+    padding: .7rem 2rem;
+    border-radius: 2rem;
+}
