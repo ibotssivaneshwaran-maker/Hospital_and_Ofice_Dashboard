@@ -1,5 +1,5 @@
 import React from "react";
-import "../CSS/login.css"
+import "../components/CSS/login.css"
 import { Link, Outlet } from "react-router-dom";
 import AdminLogin from "./AdminLogin";
 
