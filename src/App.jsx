@@ -9,7 +9,6 @@ import MainPage from './Modules/Hospital/components/MainPage';
 import OfficeAdminLogin from './Modules/Office/components/OfficeAdminLogin';
 import InternLogin from './Modules/Office/components/InternLogin';
 import OfficeMainLogin from './Modules/Office/components/OfficeMainLogin';
-import Dashboard from './Modules/Hospital/components/DynamicDashboard';
 import DynamicDashboard from './Modules/Hospital/components/DynamicDashboard';
 const App = () => {
   return (

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 const ReceptionistDashboard = () => {
@@ -13,7 +13,7 @@ const ReceptionistDashboard = () => {
     time: "",
   });
   const APP_SCRIPT_URL =
-    "https://script.google.com/macros/s/AKfycbyxnrwdz-AEoDY6IYeyiOWnlw0Zb7dcapMvDAHmf3OeCw9loYELF_BsPdYPP2T8pCO7/exec";
+    "https://script.google.com/macros/s/AKfycbz0OLVtXQmky-l57zhLc9aCk02t1vS5TB9pzORL-fVNvnVoBKeZe5MnaKry2FAmoQUy/exec";
   const handleSubmit = useCallback(async () => {
     sendData.append("action", "addAppointment");
     sendData.append("patientName", `${details.patientName}`);

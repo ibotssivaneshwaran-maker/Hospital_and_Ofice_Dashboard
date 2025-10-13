@@ -1,17 +1,22 @@
 import React, { useCallback, useEffect, useState } from "react";
-import "../CSS/login.css"
+import "../CSS/login.css";
+
 const DoctorDashboard = () => {
   const [appointments, setAppointments] = useState([]);
+  const [popUp, setPopUp] = useState(false);
+  const [notes, setNotes] = useState("");
+  const [userId, setUserId] = useState(0);
+  const [status, setStatus] = useState("pending");
+
   const APP_SCRIPT_URL =
-    "https://script.google.com/macros/s/AKfycbyxnrwdz-AEoDY6IYeyiOWnlw0Zb7dcapMvDAHmf3OeCw9loYELF_BsPdYPP2T8pCO7/exec";
-    const [status, setStatus] = useState("pending")
+    "https://script.google.com/macros/s/AKfycbz0OLVtXQmky-l57zhLc9aCk02t1vS5TB9pzORL-fVNvnVoBKeZe5MnaKry2FAmoQUy/exec";
+
   const fetchAppointments = async () => {
     try {
       const res = await fetch(`${APP_SCRIPT_URL}?action=getAppointments`);
       const result = await res.json();
       if (result.status === "success") {
         setAppointments(result.result);
-        
       }
     } catch (error) {
       console.error("Failed to fetch appointments:", error);
@@ -20,7 +25,6 @@ const DoctorDashboard = () => {
 
   useEffect(() => {
     fetchAppointments();
-    console.log(appointments)
   }, []);
 
   const handleApprove = useCallback(
@@ -39,11 +43,7 @@ const DoctorDashboard = () => {
 
         if (result.status === "success") {
           fetchAppointments();
-          setStatus((prev) => 
-            prev.map((el) =>
-              el.id === appointmentId ? {...el,status:"Approved"} : el
-            )
-          )
+          setStatus("Approved");
         } else {
           alert("Failed to approve appointment");
         }
@@ -70,24 +70,49 @@ const DoctorDashboard = () => {
 
         if (result.status === "success") {
           fetchAppointments();
-          setStatus((prev) => 
-            prev.map((el) =>
-              el.id === appointmentId ? {...el,status:"Rejeccted"} : el
-            )
-          )
+          setStatus("Rejected");
         } else {
-          alert("Failed to approve appointment");
+          alert("Failed to reject appointment");
         }
       } catch (error) {
-        console.error("Error approving appointment:", error);
+        console.error("Error rejecting appointment:", error);
       }
     },
     [APP_SCRIPT_URL]
   );
 
+  const handlePopUp = (id) => {
+    setPopUp(true);
+    setUserId(id);
+  };
+
+  const handleNotes = async () => {
+    try {
+      const sendData = new URLSearchParams();
+      sendData.append("action", "notes");
+      sendData.append("notes", `${notes}`);
+      sendData.append("id", `${userId}`);
+
+      const response = await fetch(APP_SCRIPT_URL, {
+        method: "POST",
+        body: sendData,
+      });
+
+      const res = await response.json();
+      if (res.status === "success") {
+        fetchAppointments();
+        setNotes("");
+        setPopUp(false);
+      }
+    } catch (error) {
+      console.error("Error adding notes:", error);
+    }
+  };
+
   return (
     <div>
       <h2>Doctor Dashboard</h2>
+
       <table>
         <thead>
           <tr>
@@ -103,6 +128,7 @@ const DoctorDashboard = () => {
             <th>Actions</th>
           </tr>
         </thead>
+
         <tbody>
           {appointments.map((appointment, index) => (
             <tr key={appointment.id || index}>
@@ -114,22 +140,50 @@ const DoctorDashboard = () => {
               <td>{appointment.date}</td>
               <td>{appointment.time}</td>
               <td>{appointment.status}</td>
-              <td><button>Add Notes</button></td>
               <td>
-                {appointment.status !== "pending" ? <button onClick={() => handleApprove(appointment.id)}>
-                 {appointment.status}
-                </button>: <div><button onClick={() => handleApprove(appointment.id)}>
-                Approve
-                </button>
-                <button onClick={() => handleReject(appointment.id)}>
-                  Reject
-                </button></div>}
+                {!appointment.notes ? (
+                  <button onClick={() => handlePopUp(appointment.id)}>
+                    Add Notes
+                  </button>
+                ) : (
+                  <p>{appointment.notes}</p>
+                )}
+              </td>
+              <td>
+                {appointment.status !== "pending" ? (
+                  <button>{appointment.status}</button>
+                ) : (
+                  <div>
+                    <button onClick={() => handleApprove(appointment.id)}>
+                      Approve
+                    </button>
+                    <button onClick={() => handleReject(appointment.id)}>
+                      Reject
+                    </button>
+                  </div>
+                )}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      
+
+      {popUp && (
+        <div className="popup-overlay">
+          <div className="popup-container">
+            <button className="close-btn" onClick={() => setPopUp(false)}>
+              X
+            </button>
+            <h3>Add Notes</h3>
+            <textarea
+              placeholder="Enter Notes For your patient"
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+            ></textarea>
+            <button onClick={handleNotes}>Add</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

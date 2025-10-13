@@ -7,12 +7,12 @@ const InternLogin = () => {
       const navigate = useNavigate();
     
       const FETCH_URL =
-        "https://script.google.com/macros/s/AKfycbyxnrwdz-AEoDY6IYeyiOWnlw0Zb7dcapMvDAHmf3OeCw9loYELF_BsPdYPP2T8pCO7/exec";
+        "https://script.google.com/macros/s/AKfycbz0OLVtXQmky-l57zhLc9aCk02t1vS5TB9pzORL-fVNvnVoBKeZe5MnaKry2FAmoQUy/exec";
     
       const handleClick = async () => {
         try {
           const formData = new URLSearchParams();
-          formData.append("action", "Intern");
+          formData.append("action", "intern");
           formData.append("name", input);
           formData.append("password", password);
     
