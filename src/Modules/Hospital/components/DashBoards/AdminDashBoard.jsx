@@ -16,25 +16,27 @@ const AdminDashBoard = () => {
    const APP_SCRIPT_URL =
      "https://script.google.com/macros/s/AKfycbz0OLVtXQmky-l57zhLc9aCk02t1vS5TB9pzORL-fVNvnVoBKeZe5MnaKry2FAmoQUy/exec"
    const handleSubmit = useCallback(async () => {
-     const sendData = new URLSearchParams();
+    const data = {
+        action:"",
+        id:"",
+        patientName:details.patientName,
+        age:details.age,
+        contact:details.contact,
+        doctorName:details.doctorName,
+        date:details.date,
+        time:details.time,
+      }
     if(isEditMode){
-       sendData.append("action", "editAppointment");
-       sendData.append("id",`${userId}`)
+      data.action = "editAppointment"
+       data.id = userId
     }
     else{
-       sendData.append("action", "addAppointment");
+      data.action = "addAppointment"
     }
-     sendData.append("patientName", `${details.patientName}`)
-     sendData.append("age", `${details.age}`)
-     sendData.append("contact", `${details.contact}`)
-     sendData.append("doctorName", `${details.doctorName}`)
-     sendData.append("date", `${details.date}`)
-     sendData.append("time", `${details.time}`)
-     console.log(details.time)
  
      const res = await fetch(APP_SCRIPT_URL, {
        method: "POST",
-       body: sendData,
+       body: JSON.stringify(data),
      })
  
      const result = await res.json()
@@ -83,20 +85,20 @@ const AdminDashBoard = () => {
    const handleReject = useCallback(
        async (appointmentId) => {
          try {
-           const sendData = new URLSearchParams();
-           sendData.append("action", "reject");
-           sendData.append("id", appointmentId);
    
+           const data = {
+            action : "reject",
+            id : appointmentId
+           }
            const res = await fetch(APP_SCRIPT_URL, {
              method: "POST",
-             body: sendData,
+             body: JSON.stringify(data),
            });
    
            const result = await res.json();
    
            if (result.status === "success") {
              fetchAppointments();
-             setStatus("Rejected");
            } else {
              alert("Failed to reject appointment");
            }
@@ -110,20 +112,21 @@ const AdminDashBoard = () => {
      const handleApprove = useCallback(
          async (appointmentId) => {
            try {
-             const sendData = new URLSearchParams();
-             sendData.append("action", "approve");
-             sendData.append("id", appointmentId);
+
+             const data = {
+            action : "approve",
+            id : appointmentId
+           }
      
              const res = await fetch(APP_SCRIPT_URL, {
                method: "POST",
-               body: sendData,
+               body: JSON.stringify(data),
              });
      
              const result = await res.json();
      
              if (result.status === "success") {
                fetchAppointments();
-               setStatus("Approved");
              } else {
                alert("Failed to approve appointment");
              }

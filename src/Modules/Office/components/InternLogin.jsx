@@ -11,24 +11,22 @@ const InternLogin = () => {
 
   const handleClick = async () => {
     try {
-      // Send JSON instead of URLSearchParams
-      const payload = {
-        action: "intern",
-        name: input,
-        password: password
-      };
 
+      const data = {
+        name:input,
+        password:password,
+        action:"intern"
+      }
       const res = await fetch(FETCH_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(data),
       });
 
-      const response = await res.json();
-      console.log(response);
-
+      const text = await res.text();
+      const response = JSON.parse(text);
+      console.log(response.status);
       if (response.status === "success") {
-        navigate("/intern/dashboard");
+        navigate(`/${data.action}/dashboard`);
       } else {
         alert("Invalid username or password");
       }
@@ -37,7 +35,6 @@ const InternLogin = () => {
       alert("Failed to login. Check console for details.");
     }
   };
-
   return (
     <>
       <h1>Intern Login</h1>

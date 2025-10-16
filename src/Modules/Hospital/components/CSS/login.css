@@ -1,4 +1,4 @@
-*{
+/* *{
     margin:0;
     padding: 0;
     box-sizing: border-box;
@@ -65,7 +65,7 @@ h1{
     margin: 2%;
 }
 button{
-    /* background-color: rgb(255, 177, 121); */
+    background-color: rgb(255, 177, 121);
     width: fit-content;
     text-align: center;
     margin: 10% auto;
@@ -91,4 +91,122 @@ table{
     top:40vh;
     background-color: white;
     left: 30%;
+} */
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 25px;
+  padding: 50px;
+  width: fit-content;
+  margin:30vh auto;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.main-container button {
+  padding: 14px 60px;
+  font-size: 16px;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #6c63ff; 
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+
+.main-container button:hover {
+  opacity: 0.85;
+}
+.Button-container{
+    display:flex;
+    flex-direction: row;
+    align-items:start;
+    gap: 5px;
+    justify-content: center;
+}
+.admin-login-button,.doctor-login-button,.rec-login-button{
+    text-decoration: none;
+    padding: 1rem 2rem;
+    margin: 3%;
+    border-radius: 2rem;
+    box-shadow: 0px 0px 5px black;
+}
+/* .admin-login-button:hover,.doctor-login-button:hover,.rec-login-button:hover{
+    opacity: 0.5;
+    color: white;
+    transition: all 1s;
+    background-color: #463cff;
+} */
+h1{
+    text-align: center;
+}
+.login-container{
+    display: flex;
+    flex-direction: column;
+    margin: 5% auto;
+    width: fit-content;
+    box-shadow: 0px 0px 10px black;
+    padding: 2rem;
+    border-radius: 2rem;
+}
+.login-container input,label,button{
+    margin-top: 10%;
+    font-size: 1.3rem;
+}
+.login-container input{
+    padding: .4rem;
+    font-size: 1.3rem;
+}
+.login-container button{
+    margin: 10% auto;
+    padding:.5rem 1rem;
+    border-radius:2rem;
+    border: none;
+    box-shadow:0px 0px 10px rgb(167, 167, 167);
+}
+.admin-login-button,.doctor-login-button{
+        padding:1rem 4rem;
+    }
+    .doctor-login-button:focus,.rec-login-button:focus{
+        background-color: #6c63ff;
+        color: white;
+
+    }
+
+@media screen and (max-width:425px) {
+    .Button-container{
+        margin: 0%;
+        gap:0px;
+        font-size:.6rem;
+        padding: 1rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    h1{
+        margin-top: 1rem;
+        font-size: 1rem;
+    }
+    .login-container{
+        margin-top: 2rem;
+    }
+    .login-container input,button,label{
+        font-size: .7rem;
+    }
+    .admin-login-button,.doctor-login-button{
+        padding:1rem 3.4rem;
+    }
 }

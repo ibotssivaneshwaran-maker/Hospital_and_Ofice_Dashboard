@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 
 const ReceptionistDashboard = () => {
-  const sendData = new URLSearchParams();
   const [inputs, setInputs] = useState([])
   const [details, setDetails] = useState({
     patientName: "",
@@ -15,17 +13,20 @@ const ReceptionistDashboard = () => {
   const APP_SCRIPT_URL =
     "https://script.google.com/macros/s/AKfycbz0OLVtXQmky-l57zhLc9aCk02t1vS5TB9pzORL-fVNvnVoBKeZe5MnaKry2FAmoQUy/exec";
   const handleSubmit = useCallback(async () => {
-    sendData.append("action", "addAppointment");
-    sendData.append("patientName", `${details.patientName}`);
-    sendData.append("age", `${details.age}`);
-    sendData.append("contact", `${details.contact}`);
-    sendData.append("doctorName", `${details.doctorName}`);
-    sendData.append("date", `${details.date}`);
-    sendData.append("time", `${details.time}`);
+    const data = {
+        action:"addAppointment",
+        id:"",
+        patientName:details.patientName,
+        age:details.age,
+        contact:details.contact,
+        doctorName:details.doctorName,
+        date:details.date,
+        time:details.time,
+      }
 
     const res = await fetch(APP_SCRIPT_URL, {
       method: "POST",
-      body: sendData,
+      body: JSON.stringify(data),
     });
 
     const result = await res.json();

@@ -20,8 +20,6 @@ const DynamicDashboard = () => {
       return <ReceptionistDashboard />;
     case "offadmin":
       return <OfficeAdminDashBoard />;
-    case "intern":
-      return <InternDashboard />;
     default:
       return <h2>Invalid role</h2>;
   }

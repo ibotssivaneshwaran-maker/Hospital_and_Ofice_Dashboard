@@ -11,21 +11,21 @@ const AdminLogin = () => {
 
   const handleClick = async () => {
     try {
-      const formData = new URLSearchParams();
-      formData.append("action", "Admin");
-      formData.append("name", input);
-      formData.append("password", password);
-
+      const data = {
+        name: input,
+        password: password,
+        action: "Admin",
+      };
       const res = await fetch(FETCH_URL, {
         method: "POST",
-        body: formData,
+        body: JSON.stringify(data),
       });
 
       const text = await res.text();
       const response = JSON.parse(text);
 
       if (response.status === "success") {
-       navigate(`/${formData.get("action")}/dashboard`);
+        navigate(`/${data.action}/dashboard`);
       } else {
         alert("Invalid username or password");
       }
@@ -36,32 +36,28 @@ const AdminLogin = () => {
   };
 
   return (
-      <><h1>Admin Login</h1>
-    <div className="login-container">
-      <label htmlFor="name">UserName</label>
-      <input
-        type="text"
-        id="name"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      />
+    <>
+      <h1>Admin Login</h1>
+      <div className="login-container">
+        <label htmlFor="name">UserName</label>
+        <input
+          type="text"
+          id="name"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
 
-      <label htmlFor="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <label htmlFor="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-      <button
-        onClick={handleClick}
-      >
-        Login
-      </button>
-    </div>
-    
-  </>
+        <button onClick={handleClick}>Login</button>
+      </div>
+    </>
   );
 };
 

@@ -6,7 +6,6 @@ const DoctorDashboard = () => {
   const [popUp, setPopUp] = useState(false);
   const [notes, setNotes] = useState("");
   const [userId, setUserId] = useState(0);
-  const [status, setStatus] = useState("pending");
 
   const APP_SCRIPT_URL =
     "https://script.google.com/macros/s/AKfycbz0OLVtXQmky-l57zhLc9aCk02t1vS5TB9pzORL-fVNvnVoBKeZe5MnaKry2FAmoQUy/exec";
@@ -30,20 +29,20 @@ const DoctorDashboard = () => {
   const handleApprove = useCallback(
     async (appointmentId) => {
       try {
-        const sendData = new URLSearchParams();
-        sendData.append("action", "approve");
-        sendData.append("id", appointmentId);
 
+        const data = {
+          action:"approve",
+          id:appointmentId
+        }
         const res = await fetch(APP_SCRIPT_URL, {
           method: "POST",
-          body: sendData,
+          body: JSON.stringify(data),
         });
 
         const result = await res.json();
 
         if (result.status === "success") {
           fetchAppointments();
-          setStatus("Approved");
         } else {
           alert("Failed to approve appointment");
         }
@@ -57,20 +56,21 @@ const DoctorDashboard = () => {
   const handleReject = useCallback(
     async (appointmentId) => {
       try {
-        const sendData = new URLSearchParams();
-        sendData.append("action", "reject");
-        sendData.append("id", appointmentId);
+        const data = {
+          action:"reject",
+          id:appointmentId
+        }
 
         const res = await fetch(APP_SCRIPT_URL, {
           method: "POST",
-          body: sendData,
+          body: JSON.stringify(data),
         });
 
         const result = await res.json();
 
         if (result.status === "success") {
+          alert("successs")
           fetchAppointments();
-          setStatus("Rejected");
         } else {
           alert("Failed to reject appointment");
         }
@@ -88,18 +88,20 @@ const DoctorDashboard = () => {
 
   const handleNotes = async () => {
     try {
-      const sendData = new URLSearchParams();
-      sendData.append("action", "notes");
-      sendData.append("notes", `${notes}`);
-      sendData.append("id", `${userId}`);
 
+      const data = {
+          action:"notes",
+          notes:notes,
+          id:userId
+        }
       const response = await fetch(APP_SCRIPT_URL, {
         method: "POST",
-        body: sendData,
+        body: JSON.stringify(data),
       });
 
       const res = await response.json();
       if (res.status === "success") {
+        alert("success")
         fetchAppointments();
         setNotes("");
         setPopUp(false);

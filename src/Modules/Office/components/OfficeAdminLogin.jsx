@@ -11,21 +11,22 @@ const OfficeAdminLogin = () => {
     
       const handleClick = async () => {
         try {
-          const formData = new URLSearchParams();
-          formData.append("action", "offadmin");
-          formData.append("name", input);
-          formData.append("password", password);
     
+          const data = {
+        name:input,
+        password:password,
+        action:"offadmin"
+      }
           const res = await fetch(FETCH_URL, {
             method: "POST",
-            body: formData,
+            body: JSON.stringify(data),
           });
     
           const text = await res.text();
           const response = JSON.parse(text);
     
           if (response.status === "success") {
-            navigate(`/${formData.get("action")}/dashboard`); 
+            navigate(`/${data.action}/dashboard`); 
           } else {
             alert("Invalid username or password");
           }
