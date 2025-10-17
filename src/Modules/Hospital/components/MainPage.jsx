@@ -1,5 +1,5 @@
 import React from 'react'
-import './CSS/login.css'
+import './CSS/App.css'
 import { Link } from 'react-router-dom'
 const MainPage = () => {
   return (

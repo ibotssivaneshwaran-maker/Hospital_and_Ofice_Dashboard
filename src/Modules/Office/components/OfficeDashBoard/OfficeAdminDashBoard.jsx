@@ -1,122 +1,135 @@
 import React, { useEffect, useState } from "react";
 
-const OfficeAdminDashBoard = () => {
-  const [task, setTask] = useState([]);
-  const [isEditMode, setEditMode] = useState(false)
+const OfficeAdminDashboard = () => {
+  const [tasks, setTasks] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [taskDetails, setTaskDetails] = useState({
     taskId: "",
     title: "",
     description: "",
     assignedTo: "",
     deadline: "",
-    action:"addTask",
   });
 
   const APP_SCRIPT_URL =
     "https://script.google.com/macros/s/AKfycbz0OLVtXQmky-l57zhLc9aCk02t1vS5TB9pzORL-fVNvnVoBKeZe5MnaKry2FAmoQUy/exec";
 
+  const handleFetch = async () => {
+    const response = await fetch(`${APP_SCRIPT_URL}?action=getTasks`);
+    const res = await response.json();
+    if (res.status === "success") {
+      setTasks(res.res);
+    }
+  };
+
+  useEffect(() => {
+    handleFetch();
+  }, []);
+
   const handleAdd = async () => {
-    console.log("handleAdd called")
+    const data = {
+      taskId: taskDetails.taskId,
+      title: taskDetails.title,
+      description: taskDetails.description,
+      assignedTo: taskDetails.assignedTo,
+      deadline: taskDetails.deadline,
+      action: isEditMode ? "editTask" : "addTask",
+    };
+
     const response = await fetch(APP_SCRIPT_URL, {
       method: "POST",
-      body: JSON.stringify(taskDetails),
+      body: JSON.stringify(data),
     });
     const res = await response.json();
-    console.log(res.status)
+
     if (res.status === "success") {
+      alert(isEditMode ? "Task updated successfully!" : "Task added successfully!");
       setTaskDetails({
-    taskId: "",
-    title: "",
-    description: "",
-    assignedTo: "",
-    deadline: ""
-  })
-      handleFetch()
-      setEditMode(false)
+        taskId: "",
+        title: "",
+        description: "",
+        assignedTo: "",
+        deadline: "",
+      });
+      setIsEditMode(false);
+      setShowForm(false);
+      handleFetch();
     }
-  }
+  };
 
   const handleEdit = (details) => {
     setTaskDetails({
-      taskId:details.taskId,
-    title:details.title,
-    description:details.description ,
-    assignedTo:details.assignedTo,
-    deadline:details.deadline,
-    action:"editTask"
-    })
-    setEditMode(true)
-  }
+      taskId: details.taskId,
+      title: details.title,
+      description: details.description,
+      assignedTo: details.assignedTo,
+      deadline: details.deadline,
+    });
+    setIsEditMode(true);
+    setShowForm(true);
+  };
 
   const handleDelete = async (id) => {
-    const res = await fetch(`${APP_SCRIPT_URL}?id=${id}`,{
-      method:"POST",
-      body:JSON.stringify({action:"deleteTask"})
-    })
-    const response = await res.json()
-    console.log(response)
-    if(response.status === "success"){
-      alert("sucess")
-      handleFetch()
+    const res = await fetch(`${APP_SCRIPT_URL}?id=${id}`, {
+      method: "POST",
+      body: JSON.stringify({ action: "deleteTask" }),
+    });
+    const response = await res.json();
+    if (response.status === "success") {
+      alert("Task deleted successfully!");
+      handleFetch();
     }
-  }
+  };
 
-  const handleFetch = async() => {
-    console.log("called")
-    const response = await fetch(`${APP_SCRIPT_URL}?action=getTasks`,{
-      method:"GET"
-    })
-    const res =await response.json()
-    console.log(res.res)
-    if(res.status === "success"){
-      setTask(res.res)
-    }
-  }
-  useEffect(() => {
-    handleFetch()
-  },[])
   return (
     <>
-      <div>
-        <input
-          type="text"
-          value={taskDetails.taskId}
-          onChange={(e) =>
-            setTaskDetails({ ...taskDetails, taskId: e.target.value })
-          }
-        />
-        <input
-          type="text"
-          value={taskDetails.title}
-          onChange={(e) =>
-            setTaskDetails({ ...taskDetails, title: e.target.value })
-          }
-        />
-        <textarea
-          name=""
-          id=""
-          value={taskDetails.description}
-          onChange={(e) =>
-            setTaskDetails({ ...taskDetails, description: e.target.value })
-          }
-        ></textarea>
-        <input
-          type="text"
-          value={taskDetails.assignedTo}
-          onChange={(e) =>
-            setTaskDetails({ ...taskDetails, assignedTo: e.target.value })
-          }
-        />
-        <input
-          type="text"
-          value={taskDetails.deadline}
-          onChange={(e) =>
-            setTaskDetails({ ...taskDetails, deadline: e.target.value })
-          }
-        />
-        <button onClick={handleAdd}>{isEditMode ? "Save" : "Add Task"}</button>
+      <nav className="nav">
+        <button className="addAppointment" onClick={() => { setShowForm(true); setIsEditMode(false); }}>
+          Add Task
+        </button>
+      </nav>
+
+      <div className="form-container">
+        {showForm && (
+          <div className="appointment-container">
+            <h3 className="close-btn" onClick={() => setShowForm(false)}>X</h3>
+            <input
+              type="text"
+              value={taskDetails.taskId}
+              onChange={(e) => setTaskDetails({ ...taskDetails, taskId: e.target.value })}
+              placeholder="Task ID"
+            />
+            <input
+              type="text"
+              value={taskDetails.title}
+              onChange={(e) => setTaskDetails({ ...taskDetails, title: e.target.value })}
+              placeholder="Title"
+            />
+            <textarea
+              value={taskDetails.description}
+              onChange={(e) => setTaskDetails({ ...taskDetails, description: e.target.value })}
+              placeholder="Description"
+            ></textarea>
+            <input
+              type="text"
+              value={taskDetails.assignedTo}
+              onChange={(e) => setTaskDetails({ ...taskDetails, assignedTo: e.target.value })}
+              placeholder="Assigned To"
+            />
+            <input
+              type="text"
+              value={taskDetails.deadline}
+              onChange={(e) => setTaskDetails({ ...taskDetails, deadline: e.target.value })}
+              placeholder="Deadline"
+            />
+            <button onClick={handleAdd}>{isEditMode ? "Save" : "Add Task"}</button>
+          </div>
+        )}
       </div>
-      <table>
+
+      <div className="tables-container">
+        <table className="table-container">
         <thead>
           <tr>
             <th>TaskId</th>
@@ -124,23 +137,30 @@ const OfficeAdminDashBoard = () => {
             <th>Description</th>
             <th>AssignedTo</th>
             <th>Deadline</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {task.map((element,index) => (
-            <tr key={index+1}>
+          {tasks.map((element, index) => (
+            <tr key={index + 1}>
               <td>{element.taskId}</td>
               <td>{element.title}</td>
               <td>{element.description}</td>
               <td>{element.assignedTo}</td>
               <td>{element.deadline}</td>
-              <td><button onClick={() => handleEdit(element)}>Edit</button><button onClick={() => handleDelete(element.taskId)}>Delete</button></td>
+              <td>
+                <div className='handlingEvents'>
+                  <h4 className='edit' onClick={() => handleEdit(element)}>Edit</h4>
+                <h4 className="reject" onClick={() => handleDelete(element.taskId)}>Delete</h4>
+                </div>
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
+      </div>
     </>
   );
 };
 
-export default OfficeAdminDashBoard;
+export default OfficeAdminDashboard;

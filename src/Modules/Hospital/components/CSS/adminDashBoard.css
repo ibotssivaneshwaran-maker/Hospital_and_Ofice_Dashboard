@@ -1,0 +1,134 @@
+
+.nav{
+    display: flex;
+    justify-content:flex-end;
+    align-items: center;
+    gap: 5rem;
+    margin-top: 2%;
+    padding-right: 5rem;
+}
+.addAppointment,.ApproveAppointment{
+    cursor: pointer;
+    transform: translateY(10px);
+    transition: all .3s;
+    background-color: rgb(15, 197, 15);
+    color: #ffffff;
+    border-radius: 10px;
+    padding: .8rem ;
+    border: none;
+    box-shadow: 0px 5px 10px rgb(173, 173, 173);
+}
+.addAppointment:hover{
+    transform: translateY(0);
+}
+.table-container{
+    margin: 5% auto;
+    border-collapse: collapse;
+    overflow: hidden;
+}
+.tables-container{
+    overflow:scroll;
+}
+.tables-container::-webkit-scrollbar{
+    display: none;
+}
+th,td,tr{
+    background-color: aliceblue;
+    padding: 1.5rem;
+    text-align: center;
+}
+h3{
+    text-align: end;
+    cursor: pointer;
+}
+h2{
+    text-align: center;
+    color: red;
+}
+.form-container{
+    display: block;
+     position: fixed;
+    top: 0;
+    left: 50;
+    width: 100%;
+}
+.appointment-container{
+    display: flex;
+    flex-direction: column;
+    width:30%;
+    margin: 2% auto;
+    box-shadow: 1px 1px 10px black;
+    background-color: rgb(243, 241, 238);
+    padding: 2rem;
+    border-radius: 2rem;
+}
+.appointment-container>button{
+     font-size: 1.2rem;
+    padding: .3rem 2rem;
+    border-radius: 1rem;
+    margin: 10% auto;
+    cursor: pointer;
+}
+.appointment-container>input{
+    font-size: 1.2rem;
+    padding: .3rem;
+    margin-top: 10%;
+}
+.notes-container>button{
+    font-size: .9rem;
+    padding: .3rem 1rem;
+    border-radius: 1rem;
+    margin: 10% auto;
+    cursor: pointer;
+    background-color: rgb(53, 192, 53);
+    color: #ffffff;
+}
+.popup-container{
+   display: flex;
+    flex-direction: column;
+    width:30%;
+    margin: 2% auto;
+    box-shadow: 1px 1px 10px black;
+    background-color: rgb(243, 241, 238);
+    padding: 2rem;
+    border-radius: 2rem;
+    margin-top: 15rem;
+}
+tr{
+    border-bottom: 1px solid rgb(202, 202, 202);
+}
+.popup-overlay{
+    display: block;
+     position: fixed;
+    top:0;
+    left:0;
+    width: 100%;
+}
+.popup-container>textarea{
+    font-size: 1.2rem;
+    padding: 1rem;
+    margin-top: 10%;
+}
+.popup-container>button{
+    width: fit-content;
+    margin: 8% auto;
+    padding: .4rem 1.4rem;
+    border-radius: .6rem;
+     background-color: rgb(53, 192, 53);
+    color: #ffffff;
+}
+.appointment-container>textarea{
+     font-size: 1.2rem;
+    padding: .3rem;
+    margin-top: 10%;
+}
+@media screen and (max-width:768px) {
+    .appointment-container,.popup-container{
+        width: fit-content;
+        font-size: .5rem;
+        margin-top: 10rem;
+    }
+    .appointment-container>input,.appointment-container>button,.popup-container>textarea,.popup-container>button{
+        font-size: .8rem;
+    }
+}

@@ -1,10 +1,11 @@
 import React from 'react'
 import  { useCallback, useEffect, useState } from "react"
-
+import '../CSS/adminDashBoard.css'
 const AdminDashBoard = () => {
    const [inputs, setInputs] = useState([])
    const [isEditMode, setEditMode] = useState(false)
    const [userId, setUserId] = useState(null)
+   const [isStatus, setIsstatus] = useState(false)
    const [details, setDetails] = useState({
      patientName: "",
      age: "",
@@ -52,6 +53,7 @@ const AdminDashBoard = () => {
        })
        setEditMode(false)
        setUserId(null)
+       setIsstatus(false)
        fetchAppointments()
      }
    },[details,isEditMode,userId])
@@ -83,9 +85,10 @@ const AdminDashBoard = () => {
     setUserId(appointments.id)
    }
    const handleReject = useCallback(
+    
        async (appointmentId) => {
          try {
-   
+   console.log("reject")
            const data = {
             action : "reject",
             id : appointmentId
@@ -98,6 +101,7 @@ const AdminDashBoard = () => {
            const result = await res.json();
    
            if (result.status === "success") {
+            console.log("rejected")
              fetchAppointments();
            } else {
              alert("Failed to reject appointment");
@@ -139,9 +143,17 @@ const AdminDashBoard = () => {
 
    return (
      <>
-       <div>
+     <nav className='nav'>
+          <button className='addAppointment'onClick={() => setIsstatus(true)}>Add Appointment</button>
+       </nav>
+       <div className="form-container">
+        {isStatus || isEditMode ? <div className='appointment-container'>
+          <h3 className="close-btn" onClick={() => setIsstatus(false)}>
+              X
+            </h3>
          <input
            type="text"
+           required
            placeholder="Enter PatientName"
            value={details.patientName}
            onChange={(e) =>
@@ -181,8 +193,10 @@ const AdminDashBoard = () => {
            onChange={(e) => setDetails({ ...details, time: e.target.value })}
          />
          {isEditMode ? <button onClick={handleSubmit}>Save</button>:<button onClick={handleSubmit}>Add</button>}
+       </div>:null}
        </div>
-       <table>
+       <div className="tables-container">
+        <table className='table-container'>
          <thead>
            <tr>
              <th>Id</th>
@@ -193,6 +207,7 @@ const AdminDashBoard = () => {
              <th>Date</th>
              <th>Time</th>
              <th>Status</th>
+             <th>Actions</th>
            </tr>
          </thead>
          <tbody>{inputs.map((elements,index) => (
@@ -206,25 +221,22 @@ const AdminDashBoard = () => {
              <td>{elements.time}</td>
              <td>{elements.status}</td>
              <td>
-                {elements.status !== "pending" ? (
-                  <button>{elements.status}</button>
-                ) : (
-                  <div>
-                    <button onClick={() => handleApprove(elements.id)}>
+                  <div className='handlingEvents'>
+                    {elements.status !== "Rejected" && elements.status !== "Approved" ? <h4 className='approve' onClick={() => handleApprove(elements.id)}>
                       Approve
-                    </button>
-                    <button onClick={() => handleEdit(elements)}>
+                    </h4>:null}
+                    <h4 className='edit' onClick={() => handleEdit(elements)}>
                       Edit
-                    </button>
-                    <button onClick={() => handleReject(elements.id)}>
+                    </h4>
+                    {elements.status !== "Rejected" && elements.status !== "Approved" ? <h4 className='reject' onClick={() => handleReject(elements.id)}>
                       Reject
-                    </button>
+                    </h4> : null}
                   </div>
-                )}
               </td>
            </tr>
          ))}</tbody>
        </table>
+       </div>
      </>
    )
 }

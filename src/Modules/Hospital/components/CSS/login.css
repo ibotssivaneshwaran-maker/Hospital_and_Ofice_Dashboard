@@ -1,138 +1,12 @@
-/* *{
-    margin:0;
-    padding: 0;
-    box-sizing: border-box;
-}
-.Button-container{
-    display: flex;
-    gap:10%;
-    margin:3% auto;
-    width: fit-content;
-}
-.admin-login-button{
-    background-color: rgb(252, 127, 152);
-    color: white;
-    text-decoration: none;
-    text-align: center;
-    padding: 1.2rem 1.5rem;
-    font-size:1rem;
-    border-radius: 2rem;
-    width: 10rem;
-}
-.doctor-login-button{
-    color: rgb(0, 0, 0);
-    text-decoration: none;
-    text-align: center;
-    padding: 1.2rem 1.5rem;
-    font-size:1rem;
-    border-radius: 2rem;
-    width: 10rem;
-}
-.rec-login-button{
-    color: rgb(0, 0, 0);
-    text-decoration: none;
-    text-align: center;
-    padding: 1.2rem 1.5rem;
-    font-size:1rem;
-    border-radius: 2rem;
-    width: 10rem;
-}
-.login-container{
-    display: flex;
-    flex-direction: column;
-    border:1px solid black;
-    border-radius:2rem;
-    width:30%;
-    margin: 0% auto;
-    padding: 3rem;
-    font-size:1rem;
-}
-.login-container>input{
-    font-size:1rem;
-    margin-top: 15%;
-    border-top: 0;
-    border-right: 0;
-    border-left: 0;
-    border-bottom:1px solid black;
-    outline: none;
-    background-color: transparent;
-}
-label{
-    margin-top: 5%;
-}
-h1{
-    text-align: center;
-    margin: 2%;
-}
-button{
-    background-color: rgb(255, 177, 121);
-    width: fit-content;
-    text-align: center;
-    margin: 10% auto;
-    font-size: 1rem;
-    padding: .7rem 2rem;
-    border-radius: 2rem;
-}
-table,td,th{
-    border: 1px solid rgb(87, 87, 87);
-    border-collapse: collapse;
-    padding: .5rem;
-    text-align: center;
-}
-table{
-    margin: 5% auto;
-}
-.popup-container{
-    width:40%;
-    height:50%;
-    box-shadow: 0px 0px 1px black;
-    text-align: center;
-    position:fixed;
-    top:40vh;
-    background-color: white;
-    left: 30%;
-} */
-
-/* Reset */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-.main-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 25px;
-  padding: 50px;
-  width: fit-content;
-  margin:30vh auto;
-  border-radius: 12px;
-  background-color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
 
-.main-container button {
-  padding: 14px 60px;
-  font-size: 16px;
-  font-weight: 500;
-  color: #ffffff;
-  background-color: #6c63ff; 
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: 0.25s;
-}
-
-
-.main-container button:hover {
-  opacity: 0.85;
-}
 .Button-container{
     display:flex;
-    flex-direction: row;
     align-items:start;
     gap: 5px;
     justify-content: center;
@@ -144,12 +18,6 @@ table{
     border-radius: 2rem;
     box-shadow: 0px 0px 5px black;
 }
-/* .admin-login-button:hover,.doctor-login-button:hover,.rec-login-button:hover{
-    opacity: 0.5;
-    color: white;
-    transition: all 1s;
-    background-color: #463cff;
-} */
 h1{
     text-align: center;
 }
@@ -162,30 +30,54 @@ h1{
     padding: 2rem;
     border-radius: 2rem;
 }
-.login-container input,label,button{
+.login-container>input,
+.login-container>label,
+.login-container>button{
     margin-top: 10%;
     font-size: 1.3rem;
 }
-.login-container input{
+.login-container>input{
     padding: .4rem;
     font-size: 1.3rem;
 }
-.login-container button{
-    margin: 10% auto;
-    padding:.5rem 1rem;
-    border-radius:2rem;
-    border: none;
-    box-shadow:0px 0px 10px rgb(167, 167, 167);
+.login-container>button {
+  margin: 10% auto;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  border: none;
+  box-shadow: 0px 0px 10px rgb(167, 167, 167);
+  background-color: #ffffff;
+  color: black;
+  cursor: pointer;
 }
-.admin-login-button,.doctor-login-button{
-        padding:1rem 4rem;
-    }
-    .doctor-login-button:focus,.rec-login-button:focus{
-        background-color: #6c63ff;
-        color: white;
+.admin-login-button,
+.doctor-login-button,
+.rec-login-button {
+  padding: 1rem 3rem;
+  border-radius: 2rem;
+  border: none;
+  box-shadow: 0px 0px 10px rgb(167, 167, 167);
+  background-color: #ffffff;
+  color: black;
+  text-decoration: none;
+  font-size: 16px;
+  transition: 0.3s;
+}
+.admin-login-button,
+.doctor-login-button {
+  padding: 1rem 4rem;
+}
 
-    }
+.admin-login-button:hover,
+.doctor-login-button:hover,
+.rec-login-button:hover {
+  transform: scale(1.05);
+}
 
+.active {
+  background-color: #6c63ff;
+  color: white !important;
+}
 @media screen and (max-width:425px) {
     .Button-container{
         margin: 0%;

@@ -1,5 +1,4 @@
 import React from 'react'
-import '../src/App.css'
 import Login from './Modules/Hospital/components/Login'
 import AdminLogin from "./Modules/Hospital/components/AdminLogin";
 import {BrowserRouter,Route,Routes} from 'react-router-dom'

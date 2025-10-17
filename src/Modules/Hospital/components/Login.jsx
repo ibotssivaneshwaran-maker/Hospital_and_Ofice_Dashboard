@@ -1,26 +1,48 @@
-import React from "react";
-import "../components/CSS/login.css"
+import React, { useState } from "react";
+import "../components/CSS/login.css";
 import { Link, Outlet } from "react-router-dom";
-import AdminLogin from "./AdminLogin";
 
 const Login = () => {
+  const [activeRole, setActiveRole] = useState("admin"); // default active = Admin
 
-  const cssStyles = {
-    backgroundColor:"blue"
-  }
-  const cssStyles1 = {
-    backgroundColor:"white"
-  }
-  const cssStyles2 = {
-    backgroundColor:"white"
-  }
+  const handleClick = (role) => {
+    setActiveRole(role);
+  };
+
   return (
     <>
       <div className="Button-container">
-        <Link className="admin-login-button"style={cssStyles}onClick={() => cssStyles.backgroundColor = "blue"} to={"admin"}>Admin</Link>
-        <Link className="doctor-login-button"style={cssStyles1}onClick={() => cssStyles1.backgroundColor = "blue"} to={"doctor"}>Doctor</Link>
-        <Link className="rec-login-button"style={cssStyles2} to={"receptionistandstaff"}>Receptionist/Staff</Link>
+        <Link
+          to="admin"
+          onClick={() => handleClick("admin")}
+          className={`admin-login-button ${
+            activeRole === "admin" ? "active" : ""
+          }`}
+        >
+          Admin
+        </Link>
+
+        <Link
+          to="doctor"
+          onClick={() => handleClick("doctor")}
+          className={`doctor-login-button ${
+            activeRole === "doctor" ? "active" : ""
+          }`}
+        >
+          Doctor
+        </Link>
+
+        <Link
+          to="receptionistandstaff"
+          onClick={() => handleClick("receptionist")}
+          className={`rec-login-button ${
+            activeRole === "receptionist" ? "active" : ""
+          }`}
+        >
+          Receptionist/Staff
+        </Link>
       </div>
+
       <Outlet />
     </>
   );

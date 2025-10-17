@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 
 const ReceptionistDashboard = () => {
   const [inputs, setInputs] = useState([])
+  const [isStatus, setIsstatus] = useState(false)
+     const [isEditMode, setEditMode] = useState(false)
   const [details, setDetails] = useState({
     patientName: "",
     age: "",
@@ -40,9 +42,12 @@ const ReceptionistDashboard = () => {
         date: "",
         time: "",
       });
-      fetchAppointments()
+      setEditMode(false);
+  setIsstatus(false);
+  setUserId(null);
+  fetchAppointments();
     }
-  },[details]);
+  },[details,isEditMode]);
 
   useEffect(() => {
     fetchAppointments()
@@ -59,50 +64,61 @@ const ReceptionistDashboard = () => {
   }
   return (
     <>
-      <div>
-        <input
-          type="text"
-          placeholder="Enter PatientName"
-          value={details.patientName}
-          onChange={(e) =>
-            setDetails({ ...details, patientName: e.target.value })
-          }
-        />
-        <input
-          type="number"
-          placeholder="Enter Patient Age"
-          value={details.age}
-          onChange={(e) => setDetails({ ...details, age: e.target.value })}
-        />
-        <input
-          type="number"
-          placeholder="Enter Patient Mobile Number"
-          value={details.contact}
-          onChange={(e) => setDetails({ ...details, contact: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Enter Doctor Name"
-          value={details.doctorName}
-          onChange={(e) =>
-            setDetails({ ...details, doctorName: e.target.value })
-          }
-        />
-        <input
-          type="Date"
-          placeholder="Select Date"
-          value={details.date}
-          onChange={(e) => setDetails({ ...details, date: e.target.value })}
-        />
-        <input
-          type="Time"
-          placeholder="Select Time"
-          value={details.time}
-          onChange={(e) => setDetails({ ...details, time: e.target.value })}
-        />
-        <button onClick={handleSubmit}>Add</button>
-      </div>
-      <table>
+    <h1>Staff DashBoard</h1>
+      <nav className='nav'>
+          <button className='addAppointment'onClick={() => setIsstatus(true)}>Add Appointment</button>
+       </nav>
+       <div className="form-container">
+        {isStatus || isEditMode ? <div className='appointment-container'>
+          <h3 className="close-btn" onClick={() => setIsstatus(false)}>
+              X
+            </h3>
+         <input
+           type="text"
+           required
+           placeholder="Enter PatientName"
+           value={details.patientName}
+           onChange={(e) =>
+             setDetails({ ...details, patientName: e.target.value })
+           }
+         />
+         <input
+           type="number"
+           placeholder="Enter Patient Age"
+           value={details.age}
+           onChange={(e) => setDetails({ ...details, age: e.target.value })}
+         />
+         <input
+           type="number"
+           placeholder="Enter Patient Mobile Number"
+           value={details.contact}
+           onChange={(e) => setDetails({ ...details, contact: e.target.value })}
+         />
+         <input
+           type="text"
+           placeholder="Enter Doctor Name"
+           value={details.doctorName}
+           onChange={(e) =>
+             setDetails({ ...details, doctorName: e.target.value })
+           }
+         />
+         <input
+           type="Date"
+           placeholder="Select Date"
+           value={details.date}
+           onChange={(e) => setDetails({ ...details, date: e.target.value })}
+         />
+         <input
+           type="time"
+           placeholder="Select Time"
+           value={details.time}
+           onChange={(e) => setDetails({ ...details, time: e.target.value })}
+         />
+         {isEditMode ? <button onClick={handleSubmit}>Save</button>:<button onClick={handleSubmit}>Add</button>}
+       </div>:null}
+       </div>
+      <div className="tables-container">
+        <table className="table-container">
         <thead>
           <tr>
             <th>Id</th>
@@ -128,6 +144,7 @@ const ReceptionistDashboard = () => {
           </tr>
         ))}</tbody>
       </table>
+      </div>
     </>
   );
 };
