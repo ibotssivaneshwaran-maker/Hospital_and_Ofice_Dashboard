@@ -1,33 +1,23 @@
-import React from 'react'
-import { useParams } from 'react-router-dom'
-import AdminDashBoard from './DashBoards/AdminDashBoard';
-import DoctorDashboard from './DashBoards/DoctorDashboard';
-import ReceptionistDashboard from './DashBoards/ReceptionistDashboard';
-import OfficeAdminDashBoard from '../../Office/components/OfficeDashBoard/OfficeAdminDashBoard';
-import InternDashboard from '../../Office/components/OfficeDashBoard/InternDashboard';
+import React from 'react';
+import { Outlet, useParams } from 'react-router-dom';
+import NavigationBar from './DashBoards/NavigationBar';
 
 const DynamicDashboard = () => {
-  const {action} = useParams()
+  const { action } = useParams();
 
-  switch (action.toLowerCase()){
-     case "admin":
-      return <AdminDashBoard />;
-    case "doctor":
-      return <DoctorDashboard />;
-    case "intern":
-      return <InternDashboard/>;
-    case "staff":
-      return <ReceptionistDashboard />;
-    case "offadmin":
-      return <OfficeAdminDashBoard />;
-    default:
-      return <h2>Invalid role</h2>;
+  // Only support admin for now
+  if (action.toLowerCase() !== 'admin') {
+    return <h2>Role not supported yet</h2>;
   }
-  return (
-    <>
-    
-    </>
-  )
-}
 
-export default DynamicDashboard
+  return (
+    <div>
+      <NavigationBar />
+      <div className="dashboard-content">
+        <Outlet />  {/* Nested routes like /home or /appointments will render here */}
+      </div>
+    </div>
+  );
+};
+
+export default DynamicDashboard;

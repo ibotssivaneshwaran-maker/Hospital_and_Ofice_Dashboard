@@ -19,7 +19,7 @@ const OfficeAdminDashboard = () => {
     const response = await fetch(`${APP_SCRIPT_URL}?action=getTasks`);
     const res = await response.json();
     if (res.status === "success") {
-      setTasks(res.res);
+      setTasks(res.res || res.result || []); // fallback if API returns different key
     }
   };
 
@@ -29,11 +29,7 @@ const OfficeAdminDashboard = () => {
 
   const handleAdd = async () => {
     const data = {
-      taskId: taskDetails.taskId,
-      title: taskDetails.title,
-      description: taskDetails.description,
-      assignedTo: taskDetails.assignedTo,
-      deadline: taskDetails.deadline,
+      ...taskDetails,
       action: isEditMode ? "editTask" : "addTask",
     };
 
@@ -42,7 +38,7 @@ const OfficeAdminDashboard = () => {
       body: JSON.stringify(data),
     });
     const res = await response.json();
-
+console.log(res.status)
     if (res.status === "success") {
       alert(isEditMode ? "Task updated successfully!" : "Task added successfully!");
       setTaskDetails({
@@ -60,11 +56,11 @@ const OfficeAdminDashboard = () => {
 
   const handleEdit = (details) => {
     setTaskDetails({
-      taskId: details.taskId,
-      title: details.title,
-      description: details.description,
-      assignedTo: details.assignedTo,
-      deadline: details.deadline,
+      taskId:details.taskId,
+        title: details.title,
+        description:details.description,
+        assignedTo:details.assignedTo,
+        deadline: details.deadline,
     });
     setIsEditMode(true);
     setShowForm(true);
@@ -85,42 +81,68 @@ const OfficeAdminDashboard = () => {
   return (
     <>
       <nav className="nav">
-        <button className="addAppointment" onClick={() => { setShowForm(true); setIsEditMode(false); }}>
+        <button
+          className="addAppointment"
+          onClick={() => {
+            setShowForm(true);
+            setIsEditMode(false);
+          }}
+        >
           Add Task
         </button>
       </nav>
 
-      <div className="form-container">
+      <div className={`form-container ${showForm ? "show" : ""}`}>
         {showForm && (
           <div className="appointment-container">
-            <h3 className="close-btn" onClick={() => setShowForm(false)}>X</h3>
+            <h3 className="close-btn" onClick={() =>{ 
+              setShowForm(false)
+            setTaskDetails({
+    taskId: "",
+    title: "",
+    description: "",
+    assignedTo: "",
+    deadline: "",
+  })}}>
+              X
+            </h3>
             <input
               type="text"
               value={taskDetails.taskId}
-              onChange={(e) => setTaskDetails({ ...taskDetails, taskId: e.target.value })}
+              onChange={(e) =>
+                setTaskDetails({ ...taskDetails, taskId: e.target.value })
+              }
               placeholder="Task ID"
             />
             <input
               type="text"
               value={taskDetails.title}
-              onChange={(e) => setTaskDetails({ ...taskDetails, title: e.target.value })}
+              onChange={(e) =>
+                setTaskDetails({ ...taskDetails, title: e.target.value })
+              }
               placeholder="Title"
             />
             <textarea
               value={taskDetails.description}
-              onChange={(e) => setTaskDetails({ ...taskDetails, description: e.target.value })}
+              onChange={(e) =>
+                setTaskDetails({ ...taskDetails, description: e.target.value })
+              }
               placeholder="Description"
             ></textarea>
             <input
               type="text"
               value={taskDetails.assignedTo}
-              onChange={(e) => setTaskDetails({ ...taskDetails, assignedTo: e.target.value })}
+              onChange={(e) =>
+                setTaskDetails({ ...taskDetails, assignedTo: e.target.value })
+              }
               placeholder="Assigned To"
             />
             <input
               type="text"
               value={taskDetails.deadline}
-              onChange={(e) => setTaskDetails({ ...taskDetails, deadline: e.target.value })}
+              onChange={(e) =>
+                setTaskDetails({ ...taskDetails, deadline: e.target.value })
+              }
               placeholder="Deadline"
             />
             <button onClick={handleAdd}>{isEditMode ? "Save" : "Add Task"}</button>
@@ -130,34 +152,41 @@ const OfficeAdminDashboard = () => {
 
       <div className="tables-container">
         <table className="table-container">
-        <thead>
-          <tr>
-            <th>TaskId</th>
-            <th>Title</th>
-            <th>Description</th>
-            <th>AssignedTo</th>
-            <th>Deadline</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tasks.map((element, index) => (
-            <tr key={index + 1}>
-              <td>{element.taskId}</td>
-              <td>{element.title}</td>
-              <td>{element.description}</td>
-              <td>{element.assignedTo}</td>
-              <td>{element.deadline}</td>
-              <td>
-                <div className='handlingEvents'>
-                  <h4 className='edit' onClick={() => handleEdit(element)}>Edit</h4>
-                <h4 className="reject" onClick={() => handleDelete(element.taskId)}>Delete</h4>
-                </div>
-              </td>
+          <thead>
+            <tr>
+              <th>TaskId</th>
+              <th>Title</th>
+              <th>Description</th>
+              <th>AssignedTo</th>
+              <th>Deadline</th>
+              <th>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {tasks.map((element, index) => (
+              <tr key={index}>
+                <td>{element.taskId}</td>
+                <td>{element.title}</td>
+                <td>{element.description}</td>
+                <td>{element.assignedTo}</td>
+                <td>{element.deadline}</td>
+                <td>
+                  <div className="handlingEvents">
+                    <h4 className="edit" onClick={() => handleEdit(element)}>
+                      Edit
+                    </h4>
+                    <h4
+                      className="reject"
+                      onClick={() => handleDelete(element.taskId)}
+                    >
+                      Delete
+                    </h4>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </>
   );

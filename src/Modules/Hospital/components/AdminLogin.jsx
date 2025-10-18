@@ -25,6 +25,8 @@ const AdminLogin = () => {
       const response = JSON.parse(text);
 
       if (response.status === "success") {
+         localStorage.setItem("isAuthenticated", "true");
+  localStorage.setItem("role", data.action)
         navigate(`/${data.action}/dashboard`);
       } else {
         alert("Invalid username or password");

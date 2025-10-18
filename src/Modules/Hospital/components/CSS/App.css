@@ -28,14 +28,17 @@
 .main-container button:hover {
   opacity: 0.85;
 }
+.approve:hover,.reject:hover,.edit:hover{
+  cursor: pointer;
+}
 .approve{
-    background-color: rgb(42, 199, 42);
+    background-color: #52c558;
     padding: .3rem;
     border-radius:5px;
     color: rgb(255, 255, 255);
 }
 .edit{
-    background-color: rgb(55, 102, 230);
+    background-color: rgb(137, 137, 255);
     padding: .3rem;
     border-radius:5px;
     color: rgb(255, 255, 255);
