@@ -207,7 +207,7 @@ const AdminDashBoard = () => {
               <th>Date</th>
               <th>Time</th>
               <th>Status</th>
-              <th>Actions</th>
+              {localStorage.getItem("role") !== "Staff" ? <th>Actions</th>:null}
             </tr>
           </thead>
           <tbody>
@@ -221,7 +221,7 @@ const AdminDashBoard = () => {
                 <td>{elements.date}</td>
                 <td>{elements.time}</td>
                 <td>{elements.status}</td>
-                <td>
+                {localStorage.getItem("role") !== "Staff" ? <td>
                   <div className="handlingEvents">
                     {elements.status !== "Rejected" && elements.status !== "Approved" && (
                       <h4 className="approve" onClick={() => handleApprove(elements.id)}>
@@ -237,7 +237,7 @@ const AdminDashBoard = () => {
                       </h4>
                     )}
                   </div>
-                </td>
+                </td>:null}
               </tr>
             ))}
           </tbody>

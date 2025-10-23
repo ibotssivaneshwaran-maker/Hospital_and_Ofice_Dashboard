@@ -80,7 +80,7 @@ console.log(res.status)
 
   return (
     <>
-      <nav className="nav">
+      {localStorage.getItem("role") === "offadmin" ? <nav className="nav">
         <button
           className="addAppointment"
           onClick={() => {
@@ -90,7 +90,7 @@ console.log(res.status)
         >
           Add Task
         </button>
-      </nav>
+      </nav>: null}
 
       <div className={`form-container ${showForm ? "show" : ""}`}>
         {showForm && (
@@ -149,7 +149,7 @@ console.log(res.status)
           </div>
         )}
       </div>
-
+      <h1>Office {localStorage.getItem("role")} DashBoard</h1>
       <div className="tables-container">
         <table className="table-container">
           <thead>
@@ -159,7 +159,7 @@ console.log(res.status)
               <th>Description</th>
               <th>AssignedTo</th>
               <th>Deadline</th>
-              <th>Actions</th>
+              {localStorage.getItem("role") === "offadmin" ? <th>Actions</th>:null}
             </tr>
           </thead>
           <tbody>
@@ -170,7 +170,7 @@ console.log(res.status)
                 <td>{element.description}</td>
                 <td>{element.assignedTo}</td>
                 <td>{element.deadline}</td>
-                <td>
+                {localStorage.getItem("role") === "offadmin" ?<td>
                   <div className="handlingEvents">
                     <h4 className="edit" onClick={() => handleEdit(element)}>
                       Edit
@@ -182,7 +182,7 @@ console.log(res.status)
                       Delete
                     </h4>
                   </div>
-                </td>
+                </td>:null}
               </tr>
             ))}
           </tbody>

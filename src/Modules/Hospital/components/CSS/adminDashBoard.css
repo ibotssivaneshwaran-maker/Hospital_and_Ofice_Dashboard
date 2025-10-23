@@ -192,13 +192,16 @@ th:last-child {
     border: none;
 }.navbar {
   background-color: #4f46e5;
-  padding: 10px 20px;
+  padding: 30px 20px;
 }
 
 .navbar ul {
-  display: flex;
+  display:flex;
   list-style: none;
-  gap: 20px;
+  float: right;
+  gap: 40px;
+  justify-content: center;
+  align-items: center;
 }
 
 .navbar ul li {
@@ -213,7 +216,31 @@ th:last-child {
 .nav-link.active {
   border-bottom: 2px solid yellow;
 }
-
+.lengthContainer{
+    display: flex;
+    gap: 80px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10%;
+}
+.lengthContainer>h2{
+    box-shadow: 0px 0px 10px rgb(201, 201, 201);
+    padding: 2rem;
+    border-radius: .6rem;
+    justify-content: center;
+    align-items: center;
+    font-size:1.5rem;
+    transform: translateY(10px);
+    color: rgb(0, 150, 0);
+}
+.lengthContainer>h2:hover{
+    transform: translateY(0);
+    transition: all .5s;
+}
+.lengthContainer>h2:nth-child(even){
+    color: rgb(255, 110, 110);
+}
 @media screen and (max-width: 768px) {
     .appointment-container,
     .popup-container {
@@ -229,10 +256,19 @@ th:last-child {
         margin: 0;
         padding: 0;
     }
+    .navbar>ul>li{
+        font-size:.6rem;
+    }
     .appointment-container > input,
     .appointment-container > button,
     .popup-container > textarea,
     .popup-container > button {
         font-size: 0.9rem;
+    }
+    .lengthContainer>h2{
+        font-size: 1rem;
+    }
+    .lengthContainer{
+        margin-top: 5%;
     }
 }

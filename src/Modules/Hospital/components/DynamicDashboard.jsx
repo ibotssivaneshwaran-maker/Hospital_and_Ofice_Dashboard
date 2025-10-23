@@ -1,20 +1,21 @@
-import React from 'react';
-import { Outlet, useParams } from 'react-router-dom';
-import NavigationBar from './DashBoards/NavigationBar';
+import React from "react";
+import { Outlet, useParams } from "react-router-dom";
+import NavigationBar from "./DashBoards/NavigationBar";
+import OffNavBar from "./DashBoards/OffNavBar";
 
 const DynamicDashboard = () => {
   const { action } = useParams();
-
-  // Only support admin for now
-  if (action.toLowerCase() !== 'admin') {
-    return <h2>Role not supported yet</h2>;
-  }
+  const role = action.toLowerCase();
 
   return (
     <div>
-      <NavigationBar />
+      {role === "offadmin" || role === "intern" ? (
+        <OffNavBar />
+      ) : (
+        <NavigationBar />
+      )}
       <div className="dashboard-content">
-        <Outlet />  {/* Nested routes like /home or /appointments will render here */}
+        <Outlet />
       </div>
     </div>
   );

@@ -3,7 +3,9 @@ import "../components/CSS/login.css";
 import { Link, Outlet } from "react-router-dom";
 
 const Login = () => {
-  const [activeRole, setActiveRole] = useState("admin"); // default active = Admin
+  const [activeRole, setActiveRole] = useState("admin");
+  localStorage.setItem("isAuthenticated", "false")
+  localStorage.setItem("role",null)
 
   const handleClick = (role) => {
     setActiveRole(role);

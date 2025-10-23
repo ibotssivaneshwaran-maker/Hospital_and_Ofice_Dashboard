@@ -9,9 +9,15 @@ import InternLogin from "./Modules/Office/components/InternLogin";
 import OfficeMainLogin from "./Modules/Office/components/OfficeMainLogin";
 import DynamicDashboard from "./Modules/Hospital/components/DynamicDashboard";
 import PrivateRoute from "./PrivateRoute";
+
+// Hospital components
 import AdminHome from "./Modules/Hospital/components/AdminHome";
 import AdminDashBoard from "./Modules/Hospital/components/DashBoards/AdminDashBoard";
 import DoctorsSchedule from "./Modules/Hospital/components/DashBoards/DoctorsSchedule";
+
+// Office components
+import OfficeAdminDashboard from "./Modules/Office/components/OfficeDashBoard/OfficeAdminDashBoard";
+import InternDashboard from "./Modules/Office/components/OfficeDashBoard/InternDashboard";
 
 const App = () => {
   return (
@@ -32,20 +38,23 @@ const App = () => {
           <Route path="InternLogin" element={<InternLogin />} />
         </Route>
 
-       <Route
-  path="/:action/dashboard/*"
-  element={
-    <PrivateRoute>
-      <DynamicDashboard />
-    </PrivateRoute>
-  }
->
-  <Route index element={<AdminHome />} /> 
-  <Route path="home" element={<AdminHome />} />
-  <Route path="appointments" element={<AdminDashBoard />} />
-  <Route path="doctors" element={<DoctorsSchedule />} />
-</Route>
+        <Route
+          path="/:action/dashboard/*"
+          element={
+            <PrivateRoute>
+              <DynamicDashboard />
+            </PrivateRoute>
+          }
+        >
+          <Route index element={<AdminHome />} />
+          <Route path="home" element={<AdminHome />} />
+          <Route path="appointments" element={<AdminDashBoard />} />
+          <Route path="doctors" element={<DoctorsSchedule />} />
 
+<Route path="offhome" element={<AdminHome />} />
+          <Route path="tasks" element={<OfficeAdminDashboard />} />
+          <Route path="internTasks" element={<InternDashboard />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

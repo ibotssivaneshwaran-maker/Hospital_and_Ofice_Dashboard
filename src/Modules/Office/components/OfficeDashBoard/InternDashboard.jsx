@@ -155,7 +155,6 @@ const InternDashboard = () => {
           </div>
         )}
       </div>
-
       <div className="tables-container">
         <table className="table-container">
           <thead>
