@@ -12,7 +12,7 @@ const Login = () => {
   };
 
   return (
-    <>
+    <div className="login-page">
       <div className="Button-container">
         <Link
           to="admin"
@@ -44,9 +44,8 @@ const Login = () => {
           Receptionist/Staff
         </Link>
       </div>
-
       <Outlet />
-    </>
+    </div>
   );
 };
 

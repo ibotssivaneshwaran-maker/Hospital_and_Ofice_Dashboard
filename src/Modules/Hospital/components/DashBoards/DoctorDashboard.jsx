@@ -116,7 +116,7 @@ const DoctorDashboard = () => {
     });
     setEditMode(true);
     setUserId(appointment.id);
-    setIsstatus(true); // Show form
+    setIsstatus(true);
   };
 
   const handlePopUp = (id) => {

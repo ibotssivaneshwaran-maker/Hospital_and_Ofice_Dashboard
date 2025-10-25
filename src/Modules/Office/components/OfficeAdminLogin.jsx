@@ -15,7 +15,7 @@ const OfficeAdminLogin = () => {
           const data = {
         name:input,
         password:password,
-        action:"offadmin"
+        action:"officeadmin"
       }
           const res = await fetch(FETCH_URL, {
             method: "POST",
@@ -26,6 +26,8 @@ const OfficeAdminLogin = () => {
           const response = JSON.parse(text);
     
           if (response.status === "success") {
+            localStorage.setItem("role",data.action)
+            localStorage.setItem("isAuthenticated",true)
             navigate(`/${data.action}/dashboard`); 
           } else {
             alert("Invalid username or password");

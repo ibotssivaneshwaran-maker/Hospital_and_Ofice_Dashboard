@@ -18,7 +18,10 @@ const OffNavBar = () => {
           </NavLink>
         </li>
         <li>
-          <NavLink to="/" className="nav-link">
+          <NavLink to="/"onClick={() => {
+            localStorage.setItem("role",null)
+            localStorage.setItem("isAuthenticated",false)
+          }} className="nav-link">
             Log Out
           </NavLink>
         </li>

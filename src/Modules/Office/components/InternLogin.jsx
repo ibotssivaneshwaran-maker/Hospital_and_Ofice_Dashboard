@@ -26,6 +26,8 @@ const InternLogin = () => {
       const response = JSON.parse(text);
       console.log(response.status);
       if (response.status === "success") {
+        localStorage.setItem("role",data.action)
+            localStorage.setItem("isAuthenticated",true)
         navigate(`/${data.action}/dashboard`);
       } else {
         alert("Invalid username or password");

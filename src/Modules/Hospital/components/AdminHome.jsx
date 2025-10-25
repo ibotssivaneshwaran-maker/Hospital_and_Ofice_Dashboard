@@ -25,7 +25,7 @@ const AdminHome = () => {
       const taskRes = await fetch(`${APP_SCRIPT_URL}?action=getTasks`);
       const taskData = await taskRes.json();
 
-      console.log(taskData.res.length)
+      console.log(typeof localStorage.getItem("isAuthenticated"))
 
       setStats({
         doctorsLength: doctorsData.status === "success" ? doctorsData.res.length : 0,
@@ -43,8 +43,9 @@ const AdminHome = () => {
       <h1 style={{ textAlign: "center", marginTop: "2rem" }}>
         Welcome {localStorage.getItem("role") === "Doctor" ? `${localStorage.getItem("role")}👨‍⚕️`:localStorage.getItem("role")} 
       </h1>
-      {localStorage.getItem("role") === ("Staff" || "Doctor" || "Admin") ?<div>
+      {(localStorage.getItem("role") === "Staff") || (localStorage.getItem("role")=== "Doctor") || (localStorage.getItem("role") ===  "Admin") ?<div>
        <p style={{ textAlign: "center" }}>
+        
         Manage doctors, appointments, and hospital records efficiently.
       </p>
       <div className="lengthContainer">

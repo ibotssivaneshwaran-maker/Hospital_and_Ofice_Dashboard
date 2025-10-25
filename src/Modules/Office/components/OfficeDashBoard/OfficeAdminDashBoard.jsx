@@ -76,11 +76,11 @@ console.log(res.status)
       alert("Task deleted successfully!");
       handleFetch();
     }
-  };
+  }
 
   return (
     <>
-      {localStorage.getItem("role") === "offadmin" ? <nav className="nav">
+      {localStorage.getItem("role") === "officeadmin" ? <nav className="nav">
         <button
           className="addAppointment"
           onClick={() => {
@@ -149,28 +149,26 @@ console.log(res.status)
           </div>
         )}
       </div>
-      <h1>Office {localStorage.getItem("role")} DashBoard</h1>
+      <h1 style={{marginTop:"3rem"}}>Office {localStorage.getItem("role")} DashBoard</h1>
       <div className="tables-container">
         <table className="table-container">
           <thead>
             <tr>
-              <th>TaskId</th>
               <th>Title</th>
               <th>Description</th>
               <th>AssignedTo</th>
               <th>Deadline</th>
-              {localStorage.getItem("role") === "offadmin" ? <th>Actions</th>:null}
+              {localStorage.getItem("role") === "officeadmin" ? <th>Actions</th>:null}
             </tr>
           </thead>
           <tbody>
             {tasks.map((element, index) => (
               <tr key={index}>
-                <td>{element.taskId}</td>
                 <td>{element.title}</td>
                 <td>{element.description}</td>
                 <td>{element.assignedTo}</td>
                 <td>{element.deadline}</td>
-                {localStorage.getItem("role") === "offadmin" ?<td>
+                {localStorage.getItem("role") === "officeadmin" ?<td>
                   <div className="handlingEvents">
                     <h4 className="edit" onClick={() => handleEdit(element)}>
                       Edit

@@ -200,7 +200,7 @@ th:last-child {
   list-style: none;
   float: right;
   gap: 40px;
-  justify-content: center;
+  justify-content:flex-end;
   align-items: center;
 }
 
@@ -255,6 +255,9 @@ th:last-child {
     .nav {
         margin: 0;
         padding: 0;
+    }
+    .navbar>ul{
+        gap: 32px;
     }
     .navbar>ul>li{
         font-size:.6rem;

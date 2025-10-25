@@ -17,7 +17,6 @@ import DoctorsSchedule from "./Modules/Hospital/components/DashBoards/DoctorsSch
 
 // Office components
 import OfficeAdminDashboard from "./Modules/Office/components/OfficeDashBoard/OfficeAdminDashBoard";
-import InternDashboard from "./Modules/Office/components/OfficeDashBoard/InternDashboard";
 
 const App = () => {
   return (
@@ -51,9 +50,8 @@ const App = () => {
           <Route path="appointments" element={<AdminDashBoard />} />
           <Route path="doctors" element={<DoctorsSchedule />} />
 
-<Route path="offhome" element={<AdminHome />} />
+          <Route path="offhome" element={<AdminHome />} />
           <Route path="tasks" element={<OfficeAdminDashboard />} />
-          <Route path="internTasks" element={<InternDashboard />} />
         </Route>
       </Routes>
     </BrowserRouter>

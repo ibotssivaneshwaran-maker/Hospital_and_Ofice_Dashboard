@@ -78,7 +78,19 @@ const DoctorsSchedule = () => {
         setEditMode(true);
         setUserId(index);
         setIsstatus(true);
-      };
+      }
+
+        const handleDelete = async (id) => {
+    const res = await fetch(`${APP_SCRIPT_URL}?id=${id}`, {
+      method: "POST",
+      body: JSON.stringify({ action: "deleteDoctors" }),
+    });
+    const response = await res.json();
+    if (response.status === "success") {
+      alert("Task deleted successfully!");
+      fetchDoctors();
+    }
+  }
     
   return (
    <>
@@ -159,6 +171,12 @@ const DoctorsSchedule = () => {
                        <h4 className="edit" onClick={() => handleEdit(elements,index+1)}>
                          Edit
                        </h4>
+                       <h4
+                      className="reject"
+                      onClick={() => handleDelete(elements.doctorID)}
+                    >
+                      Delete
+                    </h4>
                      </div>
                    </td>:null}
                  </tr>
