@@ -5,11 +5,11 @@ import OffNavBar from "./DashBoards/OffNavBar";
 
 const DynamicDashboard = () => {
   const { action } = useParams();
-  const role = action.toLowerCase();
+  const role = localStorage.getItem("role").toLowerCase();
 
   return (
     <div>
-      {role === "offadmin" || role === "intern" ? (
+      {role === "officeadmin" || role === "intern" ? (
         <OffNavBar />
       ) : (
         <NavigationBar />
