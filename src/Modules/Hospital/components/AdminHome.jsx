@@ -41,11 +41,10 @@ const AdminHome = () => {
   return (
     <div className="doctorContainer">
       <h1 style={{ textAlign: "center", marginTop: "2rem" }}>
-        Welcome {localStorage.getItem("role") === "Doctor" ? `${localStorage.getItem("role")}👨‍⚕️`:localStorage.getItem("role")} 
+        Welcome {localStorage.getItem("role") === "Doctor" ? `${localStorage.getItem("role")} ${localStorage.getItem("name")}👨‍⚕️`:localStorage.getItem("role")} 
       </h1>
       {(localStorage.getItem("role") === "Staff") || (localStorage.getItem("role")=== "Doctor") || (localStorage.getItem("role") ===  "Admin") ?<div>
        <p style={{ textAlign: "center" }}>
-        
         Manage doctors, appointments, and hospital records efficiently.
       </p>
       <div className="lengthContainer">

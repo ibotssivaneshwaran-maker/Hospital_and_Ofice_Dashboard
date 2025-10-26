@@ -13,6 +13,7 @@ const NavigationBar = () => {
         <li><NavLink to="/"onClick={() => {
           localStorage.setItem("role",null)
           localStorage.setItem("isAuthenticated",false)
+          localStorage.setItem("name",null)
           }} className="nav-link">Log Out</NavLink></li>
       </ul>
     </nav>

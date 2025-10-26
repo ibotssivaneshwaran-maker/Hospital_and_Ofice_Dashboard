@@ -10,12 +10,10 @@ import OfficeMainLogin from "./Modules/Office/components/OfficeMainLogin";
 import DynamicDashboard from "./Modules/Hospital/components/DynamicDashboard";
 import PrivateRoute from "./PrivateRoute";
 
-// Hospital components
 import AdminHome from "./Modules/Hospital/components/AdminHome";
 import AdminDashBoard from "./Modules/Hospital/components/DashBoards/AdminDashBoard";
 import DoctorsSchedule from "./Modules/Hospital/components/DashBoards/DoctorsSchedule";
 
-// Office components
 import OfficeAdminDashboard from "./Modules/Office/components/OfficeDashBoard/OfficeAdminDashBoard";
 
 const App = () => {

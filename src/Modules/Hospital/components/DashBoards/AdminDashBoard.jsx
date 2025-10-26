@@ -211,7 +211,35 @@ const AdminDashBoard = () => {
             </tr>
           </thead>
           <tbody>
-            {inputs.map((elements, index) => (
+            {localStorage.getItem("role") === "Doctor" ? inputs.filter((app) => app.doctorName == localStorage.getItem("name")).map((elements, index) => (
+              <tr key={index}>
+                <td>{index + 1}</td>
+                <td>{elements.patientName}</td>
+                <td>{elements.age}</td>
+                <td>{elements.contact}</td>
+                <td>{elements.doctorName}</td>
+                <td>{elements.date}</td>
+                <td>{elements.time}</td>
+                <td>{elements.status}</td>
+                {localStorage.getItem("role") !== "Staff" ? <td>
+                  <div className="handlingEvents">
+                    {elements.status !== "Rejected" && elements.status !== "Approved" && (
+                      <h4 className="approve" onClick={() => handleApprove(elements.id)}>
+                        Approve
+                      </h4>
+                    )}
+                    <h4 className="edit" onClick={() => handleEdit(elements)}>
+                      Edit
+                    </h4>
+                    {elements.status !== "Rejected" && elements.status !== "Approved" && (
+                      <h4 className="reject" onClick={() => handleReject(elements.id)}>
+                        Reject
+                      </h4>
+                    )}
+                  </div>
+                </td>:null}
+              </tr>
+            )):inputs.map((elements, index) => (
               <tr key={index}>
                 <td>{index + 1}</td>
                 <td>{elements.patientName}</td>

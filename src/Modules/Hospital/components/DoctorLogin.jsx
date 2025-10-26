@@ -28,6 +28,7 @@ const DoctorLogin = () => {
         if (response.status === "success") {
            localStorage.setItem("isAuthenticated", "true");
   localStorage.setItem("role", data.action)
+   localStorage.setItem("name",input)
          navigate(`/${data.action}/dashboard`); 
         } else {
           alert("Invalid username or password");

@@ -20,7 +20,8 @@ const DoctorDashboard = () => {
   const APP_SCRIPT_URL =
     "https://script.google.com/macros/s/AKfycbz0OLVtXQmky-l57zhLc9aCk02t1vS5TB9pzORL-fVNvnVoBKeZe5MnaKry2FAmoQUy/exec";
 
-  const fetchAppointments = async () => {
+  // ✅ Wrapped with useCallback to prevent infinite re-renders
+  const fetchAppointments = useCallback(async () => {
     try {
       const res = await fetch(`${APP_SCRIPT_URL}?action=getAppointments`);
       const result = await res.json();
@@ -28,11 +29,12 @@ const DoctorDashboard = () => {
     } catch (error) {
       console.error("Failed to fetch appointments:", error);
     }
-  };
+  }, [APP_SCRIPT_URL]);
 
+  // ✅ Runs only once (no reload loop)
   useEffect(() => {
     fetchAppointments();
-  }, []);
+  }, [fetchAppointments]);
 
   const handleApprove = useCallback(
     async (appointmentId) => {
@@ -40,6 +42,7 @@ const DoctorDashboard = () => {
         const data = { action: "approve", id: appointmentId };
         const res = await fetch(APP_SCRIPT_URL, {
           method: "POST",
+          headers: { "Content-Type": "application/json" }, // ✅ added
           body: JSON.stringify(data),
         });
         const result = await res.json();
@@ -49,7 +52,7 @@ const DoctorDashboard = () => {
         console.error("Error approving appointment:", error);
       }
     },
-    [APP_SCRIPT_URL]
+    [APP_SCRIPT_URL, fetchAppointments]
   );
 
   const handleReject = useCallback(
@@ -58,6 +61,7 @@ const DoctorDashboard = () => {
         const data = { action: "reject", id: appointmentId };
         const res = await fetch(APP_SCRIPT_URL, {
           method: "POST",
+          headers: { "Content-Type": "application/json" }, // ✅ added
           body: JSON.stringify(data),
         });
         const result = await res.json();
@@ -67,7 +71,7 @@ const DoctorDashboard = () => {
         console.error("Error rejecting appointment:", error);
       }
     },
-    [APP_SCRIPT_URL]
+    [APP_SCRIPT_URL, fetchAppointments]
   );
 
   const handleSubmit = useCallback(async () => {
@@ -84,12 +88,17 @@ const DoctorDashboard = () => {
 
     const res = await fetch(APP_SCRIPT_URL, {
       method: "POST",
+      headers: { "Content-Type": "application/json" }, // ✅ added
       body: JSON.stringify(data),
     });
 
     const result = await res.json();
     if (result.status === "success") {
-      alert(isEditMode ? "Appointment updated successfully" : "Appointment added successfully");
+      alert(
+        isEditMode
+          ? "Appointment updated successfully"
+          : "Appointment added successfully"
+      );
       setDetails({
         patientName: "",
         age: "",
@@ -103,7 +112,7 @@ const DoctorDashboard = () => {
       setIsstatus(false);
       fetchAppointments();
     }
-  }, [details, isEditMode, userId]);
+  }, [details, isEditMode, userId, fetchAppointments]);
 
   const handleEdit = (appointment) => {
     setDetails({
@@ -129,6 +138,7 @@ const DoctorDashboard = () => {
       const data = { action: "notes", notes: notes, id: userId };
       const res = await fetch(APP_SCRIPT_URL, {
         method: "POST",
+        headers: { "Content-Type": "application/json" }, // ✅ added
         body: JSON.stringify(data),
       });
       const result = await res.json();
@@ -146,7 +156,9 @@ const DoctorDashboard = () => {
   return (
     <div>
       <div className={`form-container ${isStatus || isEditMode ? "show" : ""}`}>
-        <div className={`appointment-container ${isStatus || isEditMode ? "show" : ""}`}>
+        <div
+          className={`appointment-container ${isStatus || isEditMode ? "show" : ""}`}
+        >
           <h3
             className="close-btn"
             onClick={() => {
@@ -160,7 +172,9 @@ const DoctorDashboard = () => {
             type="text"
             placeholder="Enter Patient Name"
             value={details.patientName}
-            onChange={(e) => setDetails({ ...details, patientName: e.target.value })}
+            onChange={(e) =>
+              setDetails({ ...details, patientName: e.target.value })
+            }
           />
           <input
             type="number"
@@ -178,7 +192,9 @@ const DoctorDashboard = () => {
             type="text"
             placeholder="Enter Doctor Name"
             value={details.doctorName}
-            onChange={(e) => setDetails({ ...details, doctorName: e.target.value })}
+            onChange={(e) =>
+              setDetails({ ...details, doctorName: e.target.value })
+            }
           />
           <input
             type="date"
@@ -192,7 +208,10 @@ const DoctorDashboard = () => {
             value={details.time}
             onChange={(e) => setDetails({ ...details, time: e.target.value })}
           />
-          <button onClick={handleSubmit}>{isEditMode ? "Save" : "Add"}</button>
+          {/* ✅ prevent form auto reload */}
+          <button type="button" onClick={handleSubmit}>
+            {isEditMode ? "Save" : "Add"}
+          </button>
         </div>
       </div>
 
@@ -215,42 +234,59 @@ const DoctorDashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {appointments.map((appointment, index) => (
-              <tr key={appointment.id || index}>
-                <td>{appointment.id}</td>
-                <td>{appointment.patientName}</td>
-                <td>{appointment.age}</td>
-                <td>{appointment.contact}</td>
-                <td>{appointment.doctorName}</td>
-                <td>{appointment.date}</td>
-                <td>{appointment.time}</td>
-                <td>{appointment.status}</td>
-                <td>
-                  {!appointment.notes ? (
-                    <button className="addNotes" onClick={() => handlePopUp(appointment.id)}>Add Notes</button>
-                  ) : (
-                    <p>{appointment.notes}</p>
-                  )}
-                </td>
-                <td>
-                  <div className="handlingEvents">
-                    {appointment.status !== "Rejected" && appointment.status !== "Approved" && (
-                      <h4 className="approve" onClick={() => handleApprove(appointment.id)}>
-                        Approve
-                      </h4>
+            {appointments
+              .filter((app) =>{ 
+                app.doctorName === localStorage.getItem("name")})
+              .map((appointment, index) => (
+                <tr key={appointment.id || index}>
+                  <td>{appointment.id}</td>
+                  <td>{appointment.patientName}</td>
+                  <td>{appointment.age}</td>
+                  <td>{appointment.contact}</td>
+                  <td>{appointment.doctorName}</td>
+                  <td>{appointment.date}</td>
+                  <td>{appointment.time}</td>
+                  <td>{appointment.status}</td>
+                  <td>
+                    {!appointment.notes ? (
+                      <button
+                        className="addNotes"
+                        type="button"
+                        onClick={() => handlePopUp(appointment.id)}
+                      >
+                        Add Notes
+                      </button>
+                    ) : (
+                      <p>{appointment.notes}</p>
                     )}
-                    <h4 className="edit" onClick={() => handleEdit(appointment)}>
-                      Edit
-                    </h4>
-                    {appointment.status !== "Rejected" && appointment.status !== "Approved" && (
-                      <h4 className="reject" onClick={() => handleReject(appointment.id)}>
-                        Reject
+                  </td>
+                  <td>
+                    <div className="handlingEvents">
+                      {appointment.status !== "Rejected" &&
+                        appointment.status !== "Approved" && (
+                          <h4
+                            className="approve"
+                            onClick={() => handleApprove(appointment.id)}
+                          >
+                            Approve
+                          </h4>
+                        )}
+                      <h4 className="edit" onClick={() => handleEdit(appointment)}>
+                        Edit
                       </h4>
-                    )}
-                  </div>
-                </td>
-              </tr>
-            ))}
+                      {appointment.status !== "Rejected" &&
+                        appointment.status !== "Approved" && (
+                          <h4
+                            className="reject"
+                            onClick={() => handleReject(appointment.id)}
+                          >
+                            Reject
+                          </h4>
+                        )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
@@ -267,7 +303,9 @@ const DoctorDashboard = () => {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
             ></textarea>
-            <button onClick={handleNotes}>Add</button>
+            <button type="button" onClick={handleNotes}>
+              Add
+            </button>
           </div>
         </div>
       )}

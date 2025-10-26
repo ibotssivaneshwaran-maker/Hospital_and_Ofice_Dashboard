@@ -160,7 +160,7 @@ const DoctorsSchedule = () => {
                </tr>
              </thead>
              <tbody>
-               {doctors.map((elements, index) => (
+               {doctors.filter((app) => app.doctorName == localStorage.getItem("name")).map((elements, index) => (
                  <tr key={index}>
                    <td>{elements.doctorName}</td>
                    <td>{elements.doctorSpeciality}</td>
