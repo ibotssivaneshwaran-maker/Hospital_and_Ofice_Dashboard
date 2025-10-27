@@ -1,7 +1,8 @@
+// RoleLogin.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const AdminLogin = () => {
+const RoleLogin = ({ role }) => {
   const [input, setInput] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -9,37 +10,37 @@ const AdminLogin = () => {
   const FETCH_URL =
     "https://script.google.com/macros/s/AKfycbz0OLVtXQmky-l57zhLc9aCk02t1vS5TB9pzORL-fVNvnVoBKeZe5MnaKry2FAmoQUy/exec";
 
-  const handleClick = async () => {
+  const handleLogin = async () => {
+    if (!input || !password) {
+      alert("Please fill in both fields.");
+      return;
+    }
+
     try {
-      const data = {
-        name: input,
-        password: password,
-        action: "Admin",
-      };
+      const data = { name: input, password, action: role };
       const res = await fetch(FETCH_URL, {
         method: "POST",
         body: JSON.stringify(data),
       });
-
-      const text = await res.text();
-      const response = JSON.parse(text);
+      const response = await res.json();
 
       if (response.status === "success") {
-         localStorage.setItem("isAuthenticated", "true");
-  localStorage.setItem("role", data.action)
+        localStorage.setItem("isAuthenticated", "true");
+        localStorage.setItem("role", data.action);
+        localStorage.setItem("name", input);
         navigate(`/${data.action}/dashboard`);
       } else {
         alert("Invalid username or password");
       }
     } catch (err) {
       console.error("Error fetching:", err);
-      alert("Failed to login. Check console for details.");
+      alert("Login failed. Try again later.");
     }
   };
 
   return (
     <>
-      <h1>Admin Login</h1>
+      <h1>{role} Login</h1>
       <div className="login-container">
         <label htmlFor="name">UserName</label>
         <input
@@ -57,10 +58,10 @@ const AdminLogin = () => {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button onClick={handleClick}>Login</button>
+        <button onClick={handleLogin}>Login</button>
       </div>
     </>
   );
 };
 
-export default AdminLogin;
+export default RoleLogin;

@@ -160,7 +160,27 @@ const DoctorsSchedule = () => {
                </tr>
              </thead>
              <tbody>
-               {doctors.filter((app) => app.doctorName == localStorage.getItem("name")).map((elements, index) => (
+               {localStorage.getItem("role") === "Doctor" ? doctors.filter((app) => app.doctorName == localStorage.getItem("name")).map((elements, index) => (
+                 <tr key={index}>
+                   <td>{elements.doctorName}</td>
+                   <td>{elements.doctorSpeciality}</td>
+                   <td>{elements.availableDays}</td>
+                   <td>{elements.availableTimeSlots}</td>
+                   {localStorage.getItem("role") !== "Staff" ? <td>
+                     <div className="handlingEvents">
+                       <h4 className="edit" onClick={() => handleEdit(elements,index+1)}>
+                         Edit
+                       </h4>
+                       <h4
+                      className="reject"
+                      onClick={() => handleDelete(elements.doctorID)}
+                    >
+                      Delete
+                    </h4>
+                     </div>
+                   </td>:null}
+                 </tr>
+               )):doctors.map((elements, index) => (
                  <tr key={index}>
                    <td>{elements.doctorName}</td>
                    <td>{elements.doctorSpeciality}</td>

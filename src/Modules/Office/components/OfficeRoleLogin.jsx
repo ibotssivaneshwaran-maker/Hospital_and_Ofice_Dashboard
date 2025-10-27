@@ -1,7 +1,7 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const InternLogin = () => {
+const OfficeRoleLogin = ({ role }) => {
   const [input, setInput] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -9,37 +9,37 @@ const InternLogin = () => {
   const FETCH_URL =
     "https://script.google.com/macros/s/AKfycbz0OLVtXQmky-l57zhLc9aCk02t1vS5TB9pzORL-fVNvnVoBKeZe5MnaKry2FAmoQUy/exec";
 
-  const handleClick = async () => {
-    try {
+  const handleLogin = async () => {
+    if (!input || !password) {
+      alert("Please fill in both fields.");
+      return;
+    }
 
-      const data = {
-        name:input,
-        password:password,
-        action:"intern"
-      }
+    try {
+      const data = { name: input, password, action: role };
       const res = await fetch(FETCH_URL, {
         method: "POST",
         body: JSON.stringify(data),
       });
+      const response = await res.json();
 
-      const text = await res.text();
-      const response = JSON.parse(text);
-      console.log(response.status);
       if (response.status === "success") {
-        localStorage.setItem("role",data.action)
-            localStorage.setItem("isAuthenticated",true)
+        localStorage.setItem("role", data.action);
+        localStorage.setItem("isAuthenticated", true);
+        localStorage.setItem("name", input);
         navigate(`/${data.action}/dashboard`);
       } else {
         alert("Invalid username or password");
       }
     } catch (err) {
       console.error("Error fetching:", err);
-      alert("Failed to login. Check console for details.");
+      alert("Login failed. Try again later.");
     }
   };
+
   return (
     <>
-      <h1>Intern Login</h1>
+      <h1>{role === "officeadmin" ? "Admin Login" : "Intern Login"}</h1>
       <div className="login-container">
         <label htmlFor="name">UserName</label>
         <input
@@ -48,6 +48,7 @@ const InternLogin = () => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
+
         <label htmlFor="password">Password</label>
         <input
           type="password"
@@ -55,10 +56,11 @@ const InternLogin = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button onClick={handleClick}>Login</button>
+
+        <button onClick={handleLogin}>Login</button>
       </div>
     </>
   );
 };
 
-export default InternLogin;
+export default OfficeRoleLogin;

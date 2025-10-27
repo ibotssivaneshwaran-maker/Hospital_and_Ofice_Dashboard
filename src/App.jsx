@@ -1,20 +1,17 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "./Modules/Hospital/components/Login";
-import AdminLogin from "./Modules/Hospital/components/AdminLogin";
-import DoctorLogin from "./Modules/Hospital/components/DoctorLogin";
-import ReceptionistLogin from "./Modules/Hospital/components/ReceptionistLogin";
 import MainPage from "./Modules/Hospital/components/MainPage";
-import OfficeAdminLogin from "./Modules/Office/components/OfficeAdminLogin";
-import InternLogin from "./Modules/Office/components/InternLogin";
 import OfficeMainLogin from "./Modules/Office/components/OfficeMainLogin";
-import DynamicDashboard from "./Modules/Hospital/components/DynamicDashboard";
+import RoleLogin from "./Modules/Hospital/components/RoleLogin";
 import PrivateRoute from "./PrivateRoute";
 
+import DynamicDashboard from "./Modules/Hospital/components/DynamicDashboard";
 import AdminHome from "./Modules/Hospital/components/AdminHome";
 import AdminDashBoard from "./Modules/Hospital/components/DashBoards/AdminDashBoard";
 import DoctorsSchedule from "./Modules/Hospital/components/DashBoards/DoctorsSchedule";
-
 import OfficeAdminDashboard from "./Modules/Office/components/OfficeDashBoard/OfficeAdminDashBoard";
+import OfficeRoleLogin from "./Modules/Office/components/OfficeRoleLogin";
+import PatientReports from "./Modules/Hospital/components/DashBoards/PatientReports";
 
 const App = () => {
   return (
@@ -23,17 +20,21 @@ const App = () => {
         <Route path="/" element={<MainPage />} />
 
         <Route path="/hospitalLogin" element={<Login />}>
-          <Route index element={<AdminLogin />} />
-          <Route path="admin" element={<AdminLogin />} />
-          <Route path="doctor" element={<DoctorLogin />} />
-          <Route path="receptionistandstaff" element={<ReceptionistLogin />} />
+          <Route index element={<RoleLogin role="Admin" />} />
+          <Route path="admin" element={<RoleLogin role="Admin" />} />
+          <Route path="doctor" element={<RoleLogin role="Doctor" />} />
+          <Route
+            path="receptionistandstaff"
+            element={<RoleLogin role="Staff" />}
+          />
         </Route>
 
         <Route path="/officeLogin" element={<OfficeMainLogin />}>
-          <Route index element={<OfficeAdminLogin />} />
-          <Route path="officeAdminLogin" element={<OfficeAdminLogin />} />
-          <Route path="InternLogin" element={<InternLogin />} />
-        </Route>
+  <Route index element={<OfficeRoleLogin role="officeadmin" />} />
+  <Route path="officeAdminLogin" element={<OfficeRoleLogin role="officeadmin" />} />
+  <Route path="InternLogin" element={<OfficeRoleLogin role="intern" />} />
+</Route>
+
 
         <Route
           path="/:action/dashboard/*"
@@ -47,6 +48,7 @@ const App = () => {
           <Route path="home" element={<AdminHome />} />
           <Route path="appointments" element={<AdminDashBoard />} />
           <Route path="doctors" element={<DoctorsSchedule />} />
+          <Route path="reports" element={<PatientReports />} />
 
           <Route path="offhome" element={<AdminHome />} />
           <Route path="tasks" element={<OfficeAdminDashboard />} />

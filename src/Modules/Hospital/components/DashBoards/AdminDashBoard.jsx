@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import '../CSS/adminDashBoard.css';
-import NavigationBar from "./NavigationBar.jsx";
 
 const AdminDashBoard = () => {
   const [inputs, setInputs] = useState([]);
@@ -37,7 +36,7 @@ const AdminDashBoard = () => {
     } else {
       data.action = "addAppointment";
     }
-
+console.log(data.time)
     const res = await fetch(APP_SCRIPT_URL, {
       method: "POST",
       body: JSON.stringify(data),
@@ -45,7 +44,7 @@ const AdminDashBoard = () => {
 
     const result = await res.json();
     if (result.status === "success") {
-      alert("Appointment saved successfully");
+      isEditMode ? alert("Appointment saved successfully") : alert("Appointment Added successfully")
       setDetails({
         patientName: "",
         age: "",
@@ -89,23 +88,25 @@ const AdminDashBoard = () => {
     setIsstatus(true);
   };
 
-  const handleReject = useCallback(
-    async (appointmentId) => {
-      try {
-        const data = { action: "reject", id: appointmentId };
-        const res = await fetch(APP_SCRIPT_URL, {
-          method: "POST",
-          body: JSON.stringify(data),
-        });
-        const result = await res.json();
-        if (result.status === "success") fetchAppointments();
-        else alert("Failed to reject appointment");
-      } catch (error) {
-        console.error("Error rejecting appointment:", error);
-      }
-    },
-    [APP_SCRIPT_URL]
-  );
+  const handleDelete = async (id) => {
+  try {
+    const data = { action: "reject", id: id };
+    const res = await fetch(APP_SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+    const response = await res.json();
+    if (response.status === "success") {
+      alert("Appointment deleted successfully!");
+      fetchAppointments();
+    } else {
+      alert("Failed to delete appointment.");
+    }
+  } catch (error) {
+    console.error("Error deleting appointment:", error);
+  }
+};
+
 
   const handleApprove = useCallback(
     async (appointmentId) => {
@@ -199,7 +200,6 @@ const AdminDashBoard = () => {
         <table className="table-container">
           <thead>
             <tr>
-              <th>Id</th>
               <th>Patient Name</th>
               <th>Age</th>
               <th>Mobile Number</th>
@@ -213,7 +213,6 @@ const AdminDashBoard = () => {
           <tbody>
             {localStorage.getItem("role") === "Doctor" ? inputs.filter((app) => app.doctorName == localStorage.getItem("name")).map((elements, index) => (
               <tr key={index}>
-                <td>{index + 1}</td>
                 <td>{elements.patientName}</td>
                 <td>{elements.age}</td>
                 <td>{elements.contact}</td>
@@ -231,9 +230,9 @@ const AdminDashBoard = () => {
                     <h4 className="edit" onClick={() => handleEdit(elements)}>
                       Edit
                     </h4>
-                    {elements.status !== "Rejected" && elements.status !== "Approved" && (
-                      <h4 className="reject" onClick={() => handleReject(elements.id)}>
-                        Reject
+                    { elements.status !== "Approved" && (
+                      <h4 className="reject" onClick={() => handleDelete(elements.id)}>
+                        Delete
                       </h4>
                     )}
                   </div>
@@ -241,7 +240,6 @@ const AdminDashBoard = () => {
               </tr>
             )):inputs.map((elements, index) => (
               <tr key={index}>
-                <td>{index + 1}</td>
                 <td>{elements.patientName}</td>
                 <td>{elements.age}</td>
                 <td>{elements.contact}</td>
@@ -259,9 +257,9 @@ const AdminDashBoard = () => {
                     <h4 className="edit" onClick={() => handleEdit(elements)}>
                       Edit
                     </h4>
-                    {elements.status !== "Rejected" && elements.status !== "Approved" && (
-                      <h4 className="reject" onClick={() => handleReject(elements.id)}>
-                        Reject
+                    {elements.status !== "Approved" && (
+                      <h4 className="reject" onClick={() => handleDelete(elements.id)}>
+                        Delete
                       </h4>
                     )}
                   </div>

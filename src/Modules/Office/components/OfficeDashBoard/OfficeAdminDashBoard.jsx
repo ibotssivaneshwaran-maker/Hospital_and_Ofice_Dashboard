@@ -149,7 +149,7 @@ console.log(res.status)
           </div>
         )}
       </div>
-      <h1 style={{marginTop:"3rem"}}>Office {localStorage.getItem("role")} DashBoard</h1>
+      <h1 style={{marginTop:"3rem"}}>{localStorage.getItem("name")} DashBoard</h1>
       <div className="tables-container">
         <table className="table-container">
           <thead>
@@ -162,7 +162,27 @@ console.log(res.status)
             </tr>
           </thead>
           <tbody>
-            {tasks.map((element, index) => (
+            {localStorage.getItem("role") === "intern" ? tasks.filter((app) => app.assignedTo === localStorage.getItem("name")).map((element, index) => (
+              <tr key={index}>
+                <td>{element.title}</td>
+                <td>{element.description}</td>
+                <td>{element.assignedTo}</td>
+                <td>{element.deadline}</td>
+                {localStorage.getItem("role") === "officeadmin" ?<td>
+                  <div className="handlingEvents">
+                    <h4 className="edit" onClick={() => handleEdit(element)}>
+                      Edit
+                    </h4>
+                    <h4
+                      className="reject"
+                      onClick={() => handleDelete(element.taskId)}
+                    >
+                      Delete
+                    </h4>
+                  </div>
+                </td>:null}
+              </tr>
+            )):tasks.map((element, index) => (
               <tr key={index}>
                 <td>{element.title}</td>
                 <td>{element.description}</td>
