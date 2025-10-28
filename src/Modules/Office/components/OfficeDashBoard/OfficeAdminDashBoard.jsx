@@ -108,14 +108,6 @@ console.log(res.status)
             </h3>
             <input
               type="text"
-              value={taskDetails.taskId}
-              onChange={(e) =>
-                setTaskDetails({ ...taskDetails, taskId: e.target.value })
-              }
-              placeholder="Task ID"
-            />
-            <input
-              type="text"
               value={taskDetails.title}
               onChange={(e) =>
                 setTaskDetails({ ...taskDetails, title: e.target.value })
