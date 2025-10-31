@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import "../CSS/adminDashBoard.css";
+import { ToastContainer, toast, Slide } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const DoctorsSchedule = () => {
   const [doctors, setDoctors] = useState([]);
@@ -16,61 +18,85 @@ const DoctorsSchedule = () => {
   const APP_SCRIPT_URL =
     "https://script.google.com/macros/s/AKfycbz0OLVtXQmky-l57zhLc9aCk02t1vS5TB9pzORL-fVNvnVoBKeZe5MnaKry2FAmoQUy/exec";
 
+  const notify = (msg, type = "info") => {
+    toast[type](msg, {
+      position: "top-right",
+      autoClose: 2500,
+      transition: Slide,
+      theme: "colored",
+    });
+  };
+
   const handleSubmit = useCallback(async () => {
+    const actionType = isEditMode ? "editDoctors" : "addDoctors";
+
     const data = {
-      action: "",
-      id: "",
+      action: actionType,
+      id: isEditMode ? userId : "",
       doctorName: details.doctorName,
       doctorSpeciality: details.doctorSpeciality,
       availableDays: details.availableDays,
       availableTimeSlots: details.availableTimeSlots,
     };
-
-    if (isEditMode) {
-      data.action = "editDoctors";
-      data.id = userId;
-    } else {
-      data.action = "addDoctors";
-    }
-    console.log(data.id);
-    const res = await fetch(APP_SCRIPT_URL, {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
-
-    const result = await res.json();
-    if (result.status === "success") {
-      isEditMode
-        ? alert("Doctors Saved successfully")
-        : alert("Doctors Added successfully");
-      setDetails({
-        doctorName: "",
-        doctorSpeciality: "",
-        availableDays: "",
-        availableTimeSlots: "",
+    try {
+      const res = await fetch(APP_SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify(data),
       });
-      setEditMode(false);
-      setUserId(null);
-      setIsstatus(false);
-      fetchDoctors();
+
+      const result = await res.json();
+
+      if (result.status === "success") {
+        notify(
+          isEditMode
+            ? "Doctor details updated successfully!"
+            : "Doctor added successfully!",
+          "success"
+        );
+
+        setDetails({
+          doctorName: "",
+          doctorSpeciality: "",
+          availableDays: "",
+          availableTimeSlots: "",
+        });
+        setEditMode(false);
+        setUserId(null);
+        setIsstatus(false);
+        fetchDoctors();
+      } else {
+        notify(result.message || "Failed to save doctor details", "error");
+      }
+    } catch (err) {
+      notify("Network or fetch error", "error");
     }
   }, [details, isEditMode, userId]);
+
+  const fetchDoctors = async () => {
+    try {
+      const res = await fetch(`${APP_SCRIPT_URL}?action=getDoctors`);
+      const result = await res.json();
+      if (result.status === "success") {
+        setDoctors(result.res);
+      }
+    } catch (err) {
+      console.error("Error fetching doctors:", err);
+    }
+  };
 
   useEffect(() => {
     fetchDoctors();
   }, []);
+  useEffect(() => {
+  if (localStorage.getItem("role") === "Doctor") {
+    setDetails((prev) => ({
+      ...prev,
+      doctorName: localStorage.getItem("name"),
+    }));
+  }
+}, [isStatus]);
 
-  const fetchDoctors = async () => {
-    const res = await fetch(`${APP_SCRIPT_URL}?action=getDoctors`, {
-      method: "GET",
-    });
-    const result = await res.json();
-    if (result.status === "success") {
-      setDoctors(result.res);
-    }
-  };
-
-  const handleEdit = (doctorDetails, index) => {
+  const handleEdit = (doctorDetails) => {
     setDetails({
       doctorName: doctorDetails.doctorName,
       doctorSpeciality: doctorDetails.doctorSpeciality,
@@ -78,31 +104,40 @@ const DoctorsSchedule = () => {
       availableTimeSlots: doctorDetails.availableTimeSlots,
     });
     setEditMode(true);
-    setUserId(index);
+    setUserId(doctorDetails.doctorID);
     setIsstatus(true);
   };
 
-  const handleDelete = async (id) => {
-    const res = await fetch(`${APP_SCRIPT_URL}?id=${id}`, {
-      method: "POST",
-      body: JSON.stringify({ action: "deleteDoctors" }),
-    });
-    const response = await res.json();
-    if (response.status === "success") {
-      alert("Doctor deleted successfully!");
-      fetchDoctors();
+  const handleDelete = async (doctorID) => {
+    try {
+      const res = await fetch(APP_SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "deleteDoctors", id: doctorID }),
+      });
+
+      const response = await res.json();
+
+      if (response.status === "success") {
+        notify("Doctor deleted successfully!", "success");
+        fetchDoctors();
+      } else {
+        notify("Failed to delete doctor", "error");
+      }
+    } catch (err) {
+      notify("Network or fetch error", "error");
     }
   };
 
   return (
     <>
       <nav className="nav">
-        {localStorage.getItem("role") !== "Staff" ? (
+        {localStorage.getItem("role") !== "Staff" && (
           <button className="addAppointment" onClick={() => setIsstatus(true)}>
             Add Doctors
           </button>
-        ) : null}
+        )}
       </nav>
+
       <div className={`form-container ${isStatus || isEditMode ? "show" : ""}`}>
         <div
           className={`appointment-container ${
@@ -124,12 +159,17 @@ const DoctorsSchedule = () => {
           >
             X
           </h3>
+
           {localStorage.getItem("role") === "Doctor" ? (
-            <input type="text" value={localStorage.getItem("name")} readOnly />
-          ) : (
+  <input
+    type="text"
+    value={details.doctorName || localStorage.getItem("name")}
+    readOnly
+  />
+): (
             <input
               type="text"
-              required
+              required = {true}
               placeholder="Enter Doctor Name"
               readOnly={isEditMode}
               value={details.doctorName}
@@ -141,7 +181,7 @@ const DoctorsSchedule = () => {
 
           <input
             type="text"
-            placeholder="Enter Specciality Of Doctor"
+            placeholder="Enter Specialty of Doctor"
             value={details.doctorSpeciality}
             onChange={(e) =>
               setDetails({ ...details, doctorSpeciality: e.target.value })
@@ -156,18 +196,17 @@ const DoctorsSchedule = () => {
             }
           />
           <input
-            type="time"
+            type="text"
             placeholder="Enter Available Time Slots"
             value={details.availableTimeSlots}
             onChange={(e) =>
               setDetails({ ...details, availableTimeSlots: e.target.value })
             }
           />
-          {isEditMode ? (
-            <button onClick={handleSubmit}>Save</button>
-          ) : (
-            <button onClick={handleSubmit}>Add</button>
-          )}
+
+          <button onClick={handleSubmit}>
+            {isEditMode ? "Save" : "Add"}
+          </button>
         </div>
       </div>
 
@@ -175,76 +214,50 @@ const DoctorsSchedule = () => {
         <table className="table-container">
           <thead>
             <tr>
-              <th>DoctorName</th>
+              <th>Doctor Name</th>
               <th>Specialty</th>
-              <th>AvailableDays</th>
-              <th>AvailableTimeSlots</th>
-              {localStorage.getItem("role") !== "Staff" ? (
-                <th>Action</th>
-              ) : null}
+              <th>Available Days</th>
+              <th>Available Time Slots</th>
+              {localStorage.getItem("role") !== "Staff" && <th>Action</th>}
             </tr>
           </thead>
           <tbody>
-            {localStorage.getItem("role") === "Doctor"
-              ? doctors
-                  .filter(
-                    (app) => app.doctorName == localStorage.getItem("name")
-                  )
-                  .map((elements, index) => (
-                    <tr key={index}>
-                      <td>{elements.doctorName}</td>
-                      <td>{elements.doctorSpeciality}</td>
-                      <td>{elements.availableDays}</td>
-                      <td>{elements.availableTimeSlots}</td>
-                      {localStorage.getItem("role") !== "Staff" ? (
-                        <td>
-                          <div className="handlingEvents">
-                            <h4
-                              className="edit"
-                              onClick={() => handleEdit(elements, index + 1)}
-                            >
-                              Edit
-                            </h4>
-                            <h4
-                              className="reject"
-                              onClick={() => handleDelete(elements.doctorID)}
-                            >
-                              Delete
-                            </h4>
-                          </div>
-                        </td>
-                      ) : null}
-                    </tr>
-                  ))
-              : doctors.map((elements, index) => (
-                  <tr key={index}>
-                    <td>{elements.doctorName}</td>
-                    <td>{elements.doctorSpeciality}</td>
-                    <td>{elements.availableDays}</td>
-                    <td>{elements.availableTimeSlots}</td>
-                    {localStorage.getItem("role") !== "Staff" ? (
-                      <td>
-                        <div className="handlingEvents">
-                          <h4
-                            className="edit"
-                            onClick={() => handleEdit(elements, index + 1)}
-                          >
-                            Edit
-                          </h4>
-                          <h4
-                            className="reject"
-                            onClick={() => handleDelete(elements.doctorID)}
-                          >
-                            Delete
-                          </h4>
-                        </div>
-                      </td>
-                    ) : null}
-                  </tr>
-                ))}
+            {(localStorage.getItem("role") === "Doctor"
+              ? doctors.filter(
+                  (app) => app.doctorName === localStorage.getItem("name")
+                )
+              : doctors
+            ).map((elements, index) => (
+              <tr key={index}>
+                <td>{elements.doctorName}</td>
+                <td>{elements.doctorSpeciality}</td>
+                <td>{elements.availableDays}</td>
+                <td>{elements.availableTimeSlots}</td>
+                {localStorage.getItem("role") !== "Staff" && (
+                  <td>
+                    <div className="handlingEvents">
+                      <h4
+                        className="edit"
+                        onClick={() => handleEdit(elements)}
+                      >
+                        Edit
+                      </h4>
+                      <h4
+                        className="reject"
+                        onClick={() => handleDelete(elements.doctorID)}
+                      >
+                        Delete
+                      </h4>
+                    </div>
+                  </td>
+                )}
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
+
+      <ToastContainer />
     </>
   );
 };

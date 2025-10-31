@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import "../CSS/adminDashBoard.css";
+import { ToastContainer, toast, Slide } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AdminDashBoard = () => {
   const [inputs, setInputs] = useState([]);
@@ -23,6 +25,16 @@ const AdminDashBoard = () => {
   const APP_SCRIPT_URL =
     "https://script.google.com/macros/s/AKfycbz0OLVtXQmky-l57zhLc9aCk02t1vS5TB9pzORL-fVNvnVoBKeZe5MnaKry2FAmoQUy/exec";
 
+  const notify = (msg, type = "info") => {
+    toast[type](msg, {
+      position: "top-right",
+      autoClose: 2500,
+      transition: Slide,
+      theme: "colored",
+    });
+  };
+
+  // ✅ Submit form
   const handleSubmit = useCallback(async () => {
     const data = {
       action: "",
@@ -39,12 +51,8 @@ const AdminDashBoard = () => {
       data.doctorName = localStorage.getItem("name");
     }
 
-    if (isEditMode) {
-      data.action = "editAppointment";
-      data.id = userId;
-    } else {
-      data.action = "addAppointment";
-    }
+    data.action = isEditMode ? "editAppointment" : "addAppointment";
+    if (isEditMode) data.id = userId;
 
     const res = await fetch(APP_SCRIPT_URL, {
       method: "POST",
@@ -53,10 +61,12 @@ const AdminDashBoard = () => {
 
     const result = await res.json();
     if (result.status === "success") {
-      isEditMode
-        ? alert("Appointment updated successfully")
-        : alert("Appointment added successfully");
-
+      notify(
+        isEditMode
+          ? "Appointment updated successfully"
+          : "Appointment added successfully",
+        "success"
+      );
       setDetails({
         patientName: "",
         age: "",
@@ -69,33 +79,59 @@ const AdminDashBoard = () => {
       setUserId(null);
       setIsstatus(false);
       fetchAppointments();
+    } else {
+      notify("Failed to save appointment", "error");
     }
   }, [details, isEditMode, userId]);
 
+  // ✅ Fetch appointments & doctors
+  const fetchAppointments = useCallback(async () => {
+    try {
+      const res = await fetch(`${APP_SCRIPT_URL}?action=getAppointments`);
+      const result = await res.json();
+
+      if (result.status === "success") {
+        let allAppointments = result.result || [];
+
+        if (localStorage.getItem("role") === "Doctor") {
+          const doctorName = localStorage.getItem("name");
+          allAppointments = allAppointments.filter(
+            (appt) =>
+              appt.doctorName &&
+              appt.doctorName.trim().toLowerCase() ===
+                doctorName.trim().toLowerCase()
+          );
+        }
+
+        setInputs(allAppointments);
+      }
+
+      const doctorRes = await fetch(`${APP_SCRIPT_URL}?action=getDoctors`);
+      const doctorResult = await doctorRes.json();
+
+      if (doctorResult.status === "success" && doctorResult.res) {
+        const uniqueDoctors = [
+          ...new Set(doctorResult.res.map((doc) => doc.doctorName.trim())),
+        ].sort((a, b) => a.localeCompare(b));
+        setDoctors(uniqueDoctors);
+      }
+    } catch (err) {
+      console.error("Error fetching appointments:", err);
+      notify("Error fetching appointments", "error");
+    }
+  }, []);
+
   useEffect(() => {
     fetchAppointments();
-
     if (localStorage.getItem("role") === "Doctor") {
       setDetails((prev) => ({
         ...prev,
         doctorName: localStorage.getItem("name"),
       }));
     }
-  }, []);
+  }, [fetchAppointments]);
 
-  const fetchAppointments = async () => {
-    const res = await fetch(`${APP_SCRIPT_URL}?action=getAppointments`);
-    const result = await res.json();
-    console.log(result.result)
-    if (result.status === "success") setInputs(result.result);
-
-    const doctorRes = await fetch(`${APP_SCRIPT_URL}?action=getDoctors`);
-    const doctorResult = await doctorRes.json();
-    if (doctorResult.status === "success") {
-      setDoctors(doctorResult.res.map((doc) => doc.doctorName));
-    }
-  };
-
+  // ✅ Edit handler
   const handleEdit = (appointment) => {
     setDetails({
       patientName: appointment.patientName,
@@ -110,32 +146,35 @@ const AdminDashBoard = () => {
     setIsstatus(true);
   };
 
+  // ✅ Delete
   const handleDelete = async (id) => {
-    console.log(id)
     const data = { action: "reject", id };
     const res = await fetch(APP_SCRIPT_URL, {
       method: "POST",
       body: JSON.stringify(data),
     });
     const response = await res.json();
-    console.log(response)
     if (response.status === "success") {
-      alert("Appointment deleted successfully!");
+      notify("Appointment deleted successfully", "success");
       fetchAppointments();
-    } else alert("Failed to delete appointment.");
+    } else notify("Failed to delete appointment", "error");
   };
 
-  const handleApprove = useCallback(async (appointmentId) => {
+  // ✅ Approve
+  const handleApprove = async (appointmentId) => {
     const data = { action: "approve", id: appointmentId };
     const res = await fetch(APP_SCRIPT_URL, {
       method: "POST",
       body: JSON.stringify(data),
     });
     const result = await res.json();
-    if (result.status === "success") fetchAppointments();
-    else alert("Failed to approve appointment");
-  }, []);
+    if (result.status === "success") {
+      notify("Appointment approved!", "success");
+      fetchAppointments();
+    } else notify("Failed to approve appointment", "error");
+  };
 
+  // ✅ Add note
   const handleAddNoteClick = (patient) => {
     setSelectedPatient(patient);
     setNoteFormVisible(true);
@@ -143,7 +182,7 @@ const AdminDashBoard = () => {
 
   const handleSaveNote = async (e) => {
     e.preventDefault();
-    if (!noteText.trim()) return alert("Please enter a note.");
+    if (!noteText.trim()) return notify("Please enter a note", "warning");
 
     const data = {
       action: "notes",
@@ -158,12 +197,12 @@ const AdminDashBoard = () => {
     const result = await res.json();
 
     if (result.status === "success") {
-      alert("Note added successfully!");
+      notify("Note added successfully!", "success");
       setNoteFormVisible(false);
       setNoteText("");
       setSelectedPatient(null);
       fetchAppointments();
-    } else alert("Failed to add note.");
+    } else notify("Failed to add note", "error");
   };
 
   return (
@@ -174,6 +213,7 @@ const AdminDashBoard = () => {
         </button>
       </nav>
 
+      {/* ✅ Appointment Form */}
       <div className={`form-container ${isStatus || isEditMode ? "show" : ""}`}>
         <div className="appointment-container">
           <h3
@@ -221,7 +261,8 @@ const AdminDashBoard = () => {
           />
 
           <div className="form-field">
-            {localStorage.getItem("role") === "Admin" && !isEditMode ? (
+            {localStorage.getItem("role") === "Admin" ||
+            (localStorage.getItem("role") === "Staff" && !isEditMode) ? (
               <select
                 value={details.doctorName}
                 onChange={(e) =>
@@ -240,7 +281,9 @@ const AdminDashBoard = () => {
                 type="text"
                 placeholder="Enter Doctor Name"
                 value={details.doctorName}
-                readOnly={isEditMode || localStorage.getItem("role") === "Doctor"}
+                readOnly={
+                  isEditMode || localStorage.getItem("role") === "Doctor"
+                }
                 onChange={(e) =>
                   setDetails({ ...details, doctorName: e.target.value })
                 }
@@ -266,6 +309,7 @@ const AdminDashBoard = () => {
         </div>
       </div>
 
+      {/* ✅ Table Section */}
       <div className="tables-container">
         <table className="table-container">
           <thead>
@@ -290,38 +334,48 @@ const AdminDashBoard = () => {
                 <td>{row.doctorName}</td>
                 <td>{row.date}</td>
                 <td>{row.time}</td>
-                <td>
-                  {row.notes ? (
-                    row.notes
-                  ) : (
-                    <button
-                      className="addNotes"
-                      onClick={() => handleAddNoteClick(row)}
-                    >
-                      Add Note
-                    </button>
-                  )}
-                </td>
+
+                {/* ✅ FIXED hydration issue */}
+                {localStorage.getItem("role") !== "Staff" ? (
+                  <td>
+                    {row.notes ? (
+                      row.notes
+                    ) : (
+                      <button
+                        className="addNotes"
+                        onClick={() => handleAddNoteClick(row)}
+                      >
+                        Add Note
+                      </button>
+                    )}
+                  </td>
+                ) : (
+                  <td>{row.notes ? row.notes : "-"}</td>
+                )}
+
                 <td>{row.status}</td>
+
                 {localStorage.getItem("role") !== "Staff" && (
                   <td>
-                   <div className="handlingEvents">
-                       <h4 className="edit" onClick={() => handleEdit(row)}>
-                         Edit
-                       </h4>
-                       <h4
-                      className="reject"
-                      onClick={() => handleDelete(row.id)}
-                    >
-                      Delete
-                    </h4>
-                       {row.status !== "Approved" ? <h4
-                      className="approve"
-                      onClick={() => handleApprove(row.id)}
-                    >
-                      Approve
-                    </h4>:null}
-                     </div>
+                    <div className="handlingEvents">
+                      <h4 className="edit" onClick={() => handleEdit(row)}>
+                        Edit
+                      </h4>
+                      <h4
+                        className="reject"
+                        onClick={() => handleDelete(row.id)}
+                      >
+                        Delete
+                      </h4>
+                      {row.status !== "Approved" && (
+                        <h4
+                          className="approve"
+                          onClick={() => handleApprove(row.id)}
+                        >
+                          Approve
+                        </h4>
+                      )}
+                    </div>
                   </td>
                 )}
               </tr>
@@ -330,6 +384,7 @@ const AdminDashBoard = () => {
         </table>
       </div>
 
+      {/* ✅ Notes Popup */}
       {isNoteFormVisible && (
         <div className="popup-overlay">
           <div className="popup-container">
@@ -348,6 +403,8 @@ const AdminDashBoard = () => {
           </div>
         </div>
       )}
+
+      <ToastContainer />
     </>
   );
 };

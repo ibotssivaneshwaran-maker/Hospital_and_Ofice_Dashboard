@@ -12,6 +12,7 @@ import DoctorsSchedule from "./Modules/Hospital/components/DashBoards/DoctorsSch
 import OfficeAdminDashboard from "./Modules/Office/components/OfficeDashBoard/OfficeAdminDashBoard";
 import OfficeRoleLogin from "./Modules/Office/components/OfficeRoleLogin";
 import PatientReports from "./Modules/Hospital/components/DashBoards/PatientReports";
+import Footer from "./Footer";
 
 const App = () => {
   return (
@@ -30,11 +31,16 @@ const App = () => {
         </Route>
 
         <Route path="/officeLogin" element={<OfficeMainLogin />}>
-  <Route index element={<OfficeRoleLogin role="officeadmin" />} />
-  <Route path="officeAdminLogin" element={<OfficeRoleLogin role="officeadmin" />} />
-  <Route path="InternLogin" element={<OfficeRoleLogin role="intern" />} />
-</Route>
-
+          <Route index element={<OfficeRoleLogin role="officeadmin" />} />
+          <Route
+            path="officeAdminLogin"
+            element={<OfficeRoleLogin role="officeadmin" />}
+          />
+          <Route
+            path="InternLogin"
+            element={<OfficeRoleLogin role="intern" />}
+          />
+        </Route>
 
         <Route
           path="/:action/dashboard/*"
@@ -54,7 +60,9 @@ const App = () => {
           <Route path="tasks" element={<OfficeAdminDashboard />} />
         </Route>
       </Routes>
+      <Footer />
     </BrowserRouter>
+    
   );
 };
 

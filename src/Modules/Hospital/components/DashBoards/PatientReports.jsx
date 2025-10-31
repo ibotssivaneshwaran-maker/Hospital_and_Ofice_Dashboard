@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import "../CSS/adminDashBoard.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const PatientReports = () => {
   const [inputs, setInputs] = useState([]);
@@ -43,7 +45,7 @@ const PatientReports = () => {
     const result = await res.json();
 
     if (result.status === "success") {
-      alert(isEditMode ? "Report saved successfully" : "Report added successfully");
+      toast.success(isEditMode ? "Report saved successfully!" : "Report added successfully!");
       setDetails({
         patientName: "",
         doctorName: "",
@@ -55,12 +57,14 @@ const PatientReports = () => {
       setUserId(null);
       setIsstatus(false);
       fetchReport();
+    } else {
+      toast.error("Failed to save report!");
     }
   }, [details, isEditMode, userId]);
 
   useEffect(() => {
     fetchReport();
-    fetchAppointments(); // ✅ fetch doctor & patient names from appointments
+    fetchAppointments();
   }, []);
 
   const fetchReport = async () => {
@@ -71,12 +75,10 @@ const PatientReports = () => {
     }
   };
 
-  // ✅ Fetch doctors & patients from Appointments with role-based filtering
   const fetchAppointments = async () => {
     try {
       const response = await fetch(`${APP_SCRIPT_URL}?action=getAppointments`);
       const result = await response.json();
-console.log(result)
       if (result.status === "success") {
         const role = localStorage.getItem("role");
         const currentUser = localStorage.getItem("name");
@@ -88,7 +90,6 @@ console.log(result)
           ...new Set(result.result.map((i) => i.patientName).filter(Boolean)),
         ];
 
-        // 👨‍⚕️ Doctor → only their patients
         if (role === "Doctor") {
           const filteredPatients = [
             ...new Set(
@@ -100,9 +101,7 @@ console.log(result)
           ];
           setDoctors([currentUser]);
           setPatients(filteredPatients);
-        }
-        // 🧑‍💼 Admin → all
-        else {
+        } else {
           setDoctors(allDoctors);
           setPatients(allPatients);
         }
@@ -133,15 +132,17 @@ console.log(result)
     });
     const response = await res.json();
     if (response.status === "success") {
-      alert("Report deleted successfully!");
+      toast.success("Report deleted successfully!");
       fetchReport();
     } else {
-      alert("Failed to delete report.");
+      toast.error("Failed to delete report!");
     }
   };
 
   return (
     <div className="patient-reports">
+      <ToastContainer position="top-right" autoClose={2000} hideProgressBar />
+
       <nav className="nav">
         {localStorage.getItem("role") !== "Staff" && (
           <button className="addAppointment" onClick={() => setIsstatus(true)}>
@@ -257,7 +258,7 @@ console.log(result)
               .filter((e) => {
                 const role = localStorage.getItem("role");
                 if (role === "Doctor") return e.doctorName === localStorage.getItem("name");
-                return true; // Admin & Staff see all
+                return true;
               })
               .map((e, i) => (
                 <tr key={i}>

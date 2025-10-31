@@ -5,7 +5,7 @@ const MainPage = () => {
   return (
     <>
     <div className='main-container'>
-          <Link to={"/hospitalLogin"}><button>Hospital</button></Link>
+          <Link to={"/hospitalLogin"}onClick={()=> localStorage.setItem("detail","hospital")}><button>Hospital</button></Link>
           <Link to={"/officeLogin"}><button>Office</button></Link>
         </div>
         </>

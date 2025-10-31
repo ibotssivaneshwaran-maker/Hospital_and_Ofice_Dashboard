@@ -13,6 +13,7 @@ const OffNavBar = () => {
 
   return (
     <nav className="navbar">
+      <h1 className="sugam-heading">iBots</h1>
       <ul>
         <li>
           <NavLink to={`/${action}/dashboard/offhome`} className="nav-link">

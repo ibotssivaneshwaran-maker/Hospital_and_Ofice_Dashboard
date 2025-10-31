@@ -1,5 +1,3 @@
-// NavigationBar.jsx
-import React from "react";
 import { NavLink, useParams } from "react-router-dom";
 import "../CSS/adminDashBoard.css";
 
@@ -8,11 +6,13 @@ const NavigationBar = () => {
     localStorage.setItem("role", null);
     localStorage.setItem("isAuthenticated", false);
     localStorage.setItem("name", null);
+    localStorage.setItem("detail",null)
     window.location.href = "/";
   };
 
   return (
     <nav className="navbar">
+      <h1 className="sugam-heading">Sugam Medical</h1>
       <ul>
         <li>
           <NavLink to={`/${localStorage.getItem("role")}/dashboard/home`} className="nav-link">
